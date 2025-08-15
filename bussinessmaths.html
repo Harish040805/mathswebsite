@@ -109,6 +109,20 @@
   overflow-y: auto;
   box-sizing: border-box;
   box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  height: 100%;
+}
+.calculatorbody {
+  width: 100%;             /* full width of right-div */
+  max-width: 300px;        /* optional maximum width */
+  margin: auto;            /* center inside right-div */
+  background-color: #f4f4f8;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
 }
 </style>
 </head>
@@ -155,7 +169,7 @@
 </div>
 <!-- Right Side Div: 30% -->
 <div class="right-div">
-  <h2 style="text-align:center;">Scientific Calculator</h2>
+  <div class="calculatorbody">
   <input type="text" id="calcDisplay" placeholder="0" readonly style="width:100%; padding:10px; font-size:18px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;">
 
   <div id="calcButtons" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
@@ -189,6 +203,7 @@
     <button onclick="appendFunction('Math.tan(')">tan</button>
     <button onclick="clearDisplay()">C</button>
     <button onclick="deleteLast()">DEL</button>
+  </div>
   </div>
 </div>
 </div>
@@ -339,6 +354,7 @@ calculateBtn.addEventListener('click', calculate);
 </script>
 </body>
 </html>
+
 
 
 
