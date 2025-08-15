@@ -97,7 +97,7 @@
     <input type="number" id="marketPrice" placeholder="Enter Market Price">
     </label>
     <label for="quantity">Quantity &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-    <input type="number" id="quantity" placeholder="Enter Quantity">
+      <input type="number" id="quantity" placeholder="Enter Quantity" value="1" min="1">
     </label>
   </div>
   <div class="column">
@@ -141,9 +141,9 @@ quantity.addEventListener('input', () => {
 });
 
 function calculate() {
-  const cp = parseFloat(costPrice.value) || 0;
-  const sp = parseFloat(sellingPrice.value) || 0;
-  const mp = parseFloat(marketPrice.value) || 0;
+  let cp = parseFloat(costPrice.value) || 0;
+  let sp = parseFloat(sellingPrice.value) || 0;
+  let mp = parseFloat(marketPrice.value) || 0;
   let pAmt = parseFloat(profitAmount.value) || 0;
   let pPer = parseFloat(profitPercentage.value) || 0;
   let lAmt = parseFloat(lossAmount.value) || 0;
@@ -162,43 +162,73 @@ function calculate() {
       computedLossPer = (computedLoss / cp) * 100;
     }
     computedMP = sp;
-  } else if(cp && pAmt){
+  }
+  else if(cp && pAmt){
     computedSP = cp + pAmt;
     computedProfit = pAmt;
     computedProfitPer = (pAmt / cp) * 100;
     computedMP = computedSP;
-  } else if(cp && pPer){
+  }
+  else if(cp && pPer){
     computedProfit = (pPer / 100) * cp;
     computedSP = cp + computedProfit;
     computedProfitPer = pPer;
     computedMP = computedSP;
-  } else if(cp && lAmt){
+  }
+  else if(cp && lAmt){
     computedSP = cp - lAmt;
     computedLoss = lAmt;
     computedLossPer = (lAmt / cp) * 100;
     computedMP = computedSP;
-  } else if(cp && lPer){
+  }
+  else if(cp && lPer){
     computedLoss = (lPer / 100) * cp;
     computedSP = cp - computedLoss;
     computedLossPer = lPer;
     computedMP = computedSP;
   }
+  else if(sp && pAmt){
+    computedCP = sp - pAmt;
+    computedProfit = pAmt;
+    computedProfitPer = (pAmt / computedCP) * 100;
+    computedMP = sp;
+  }
+  else if(sp && pPer){
+    computedCP = sp / (1 + pPer / 100);
+    computedProfit = sp - computedCP;
+    computedProfitPer = (computedProfit / computedCP) * 100;
+    computedMP = sp;
+  }
+  else if(sp && lAmt){
+    computedCP = sp + lAmt;
+    computedLoss = lAmt;
+    computedLossPer = (lAmt / computedCP) * 100;
+    computedMP = sp;
+  }
+  else if(sp && lPer){
+    computedCP = sp / (1 - lPer / 100);
+    computedLoss = computedCP - sp;
+    computedLossPer = (computedLoss / computedCP) * 100;
+    computedMP = sp;
+  }
 
   computedProfit *= qty;
   computedLoss *= qty;
 
+  costPrice.value = computedCP ? computedCP.toFixed(2) : '';
+  sellingPrice.value = computedSP ? computedSP.toFixed(2) : '';
+  marketPrice.value = computedMP ? computedMP.toFixed(2) : '';
   profitAmount.value = computedProfit ? computedProfit.toFixed(2) : '';
   profitPercentage.value = computedProfitPer ? computedProfitPer.toFixed(2) : '';
   lossAmount.value = computedLoss ? computedLoss.toFixed(2) : '';
   lossPercentage.value = computedLossPer ? computedLossPer.toFixed(2) : '';
-  costPrice.value = computedCP ? computedCP.toFixed(2) : '';
-  sellingPrice.value = computedSP ? computedSP.toFixed(2) : '';
-  marketPrice.value = computedMP ? computedMP.toFixed(2) : '';
 
   let resultText = '';
   if(computedProfit) resultText = `Profit: ${computedProfit.toFixed(2)} (${computedProfitPer.toFixed(2)}%)`;
   else if(computedLoss) resultText = `Loss: ${computedLoss.toFixed(2)} (${computedLossPer.toFixed(2)}%)`;
-  resultDiv.textContent = resultText || 'Result will appear here';
+  else resultText = 'Result will appear here';
+  
+  resultDiv.textContent = resultText;
 }
 
 clearBtn.addEventListener('click', () => {
@@ -210,3 +240,4 @@ calculateBtn.addEventListener('click', calculate);
 </script>
 </body>
 </html>
+
