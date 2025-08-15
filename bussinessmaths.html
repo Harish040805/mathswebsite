@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Maths Simulator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #fff2b1;
+    margin: 0;
+    padding: 20px;
+  }
+  h1.page-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .container h2 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  .column {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .column label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .column input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 60%;
+    box-sizing: border-box;
+  }
+  .button-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  .button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #6a5acd;
+    color: white;
+    cursor: pointer;
+  }
+  .button-container button:hover {
+    background-color: #5748b5;
+  }
+  .result-container {
+    max-width: 800px;
+    margin: 20px auto 0 auto;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+<h1 class="page-title">Business Maths Simulator</h1>
+<div class="container">
+  <h2>PROFIT & LOSS CALCULATOR</h2>
+  <div class="column">
+    <label for="costPrice">Cost Price &nbsp; &nbsp; &nbsp; &nbsp;
+    <input type="number" id="costPrice" placeholder="Enter Cost Price">
+    </label>
+    <label for="sellingPrice">Selling Price &nbsp; &nbsp;
+    <input type="number" id="sellingPrice" placeholder="Enter Selling Price">
+    </label>
+    <label for="marketPrice">Market Price &nbsp; &nbsp;
+    <input type="number" id="marketPrice" placeholder="Enter Market Price">
+    </label>
+    <label for="quantity">Quantity &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    <input type="number" id="quantity" placeholder="Enter Quantity">
+    </label>
+  </div>
+  <div class="column">
+    <label for="profitAmount">Profit Amount &nbsp; &nbsp; &nbsp; &nbsp;
+    <input type="number" id="profitAmount" placeholder="Profit Amount">
+    </label>
+    <label for="profitPercentage">Profit Percentage &nbsp;
+    <input type="number" id="profitPercentage" placeholder="Profit Percentage">
+    </label>
+    <label for="lossAmount">Loss Amount &nbsp; &nbsp; &nbsp; &nbsp;
+    <input type="number" id="lossAmount" placeholder="Loss Amount">
+    </label>
+    <label for="lossPercentage">Loss Percentage &nbsp;
+    <input type="number" id="lossPercentage" placeholder="Loss Percentage">
+    </label>
+  </div>
+  <div class="button-container">
+    <button id="clearBtn">Clear All</button>
+    <button id="calculateBtn">Calculate</button>
+  </div>
+</div>
+<div class="result-container" id="result">Result will appear here</div>
+
+<script>
+const costPrice = document.getElementById('costPrice');
+const sellingPrice = document.getElementById('sellingPrice');
+const marketPrice = document.getElementById('marketPrice');
+const profitAmount = document.getElementById('profitAmount');
+const profitPercentage = document.getElementById('profitPercentage');
+const lossAmount = document.getElementById('lossAmount');
+const lossPercentage = document.getElementById('lossPercentage');
+const resultDiv = document.getElementById('result');
+const clearBtn = document.getElementById('clearBtn');
+const calculateBtn = document.getElementById('calculateBtn');
+const quantity = document.getElementById('quantity');
+
+quantity.addEventListener('input', () => {
+  if(quantity.value === '' || parseInt(quantity.value) < 1){
+    quantity.value = 1;
+  }
+});
+
+function calculate() {
+  const cp = parseFloat(costPrice.value) || 0;
+  const sp = parseFloat(sellingPrice.value) || 0;
+  const mp = parseFloat(marketPrice.value) || 0;
+  let pAmt = parseFloat(profitAmount.value) || 0;
+  let pPer = parseFloat(profitPercentage.value) || 0;
+  let lAmt = parseFloat(lossAmount.value) || 0;
+  let lPer = parseFloat(lossPercentage.value) || 0;
+  let qty = parseInt(quantity.value) || 1;
+
+  let computedCP = cp, computedSP = sp, computedMP = mp;
+  let computedProfit = 0, computedProfitPer = 0, computedLoss = 0, computedLossPer = 0;
+
+  if(cp && sp){
+    if(sp > cp){
+      computedProfit = sp - cp;
+      computedProfitPer = (computedProfit / cp) * 100;
+    } else if(cp > sp){
+      computedLoss = cp - sp;
+      computedLossPer = (computedLoss / cp) * 100;
+    }
+    computedMP = sp;
+  } else if(cp && pAmt){
+    computedSP = cp + pAmt;
+    computedProfit = pAmt;
+    computedProfitPer = (pAmt / cp) * 100;
+    computedMP = computedSP;
+  } else if(cp && pPer){
+    computedProfit = (pPer / 100) * cp;
+    computedSP = cp + computedProfit;
+    computedProfitPer = pPer;
+    computedMP = computedSP;
+  } else if(cp && lAmt){
+    computedSP = cp - lAmt;
+    computedLoss = lAmt;
+    computedLossPer = (lAmt / cp) * 100;
+    computedMP = computedSP;
+  } else if(cp && lPer){
+    computedLoss = (lPer / 100) * cp;
+    computedSP = cp - computedLoss;
+    computedLossPer = lPer;
+    computedMP = computedSP;
+  }
+
+  computedProfit *= qty;
+  computedLoss *= qty;
+
+  profitAmount.value = computedProfit ? computedProfit.toFixed(2) : '';
+  profitPercentage.value = computedProfitPer ? computedProfitPer.toFixed(2) : '';
+  lossAmount.value = computedLoss ? computedLoss.toFixed(2) : '';
+  lossPercentage.value = computedLossPer ? computedLossPer.toFixed(2) : '';
+  costPrice.value = computedCP ? computedCP.toFixed(2) : '';
+  sellingPrice.value = computedSP ? computedSP.toFixed(2) : '';
+  marketPrice.value = computedMP ? computedMP.toFixed(2) : '';
+
+  let resultText = '';
+  if(computedProfit) resultText = `Profit: ${computedProfit.toFixed(2)} (${computedProfitPer.toFixed(2)}%)`;
+  else if(computedLoss) resultText = `Loss: ${computedLoss.toFixed(2)} (${computedLossPer.toFixed(2)}%)`;
+  resultDiv.textContent = resultText || 'Result will appear here';
+}
+
+clearBtn.addEventListener('click', () => {
+  [costPrice, sellingPrice, marketPrice, profitAmount, profitPercentage, lossAmount, lossPercentage].forEach(i => i.value = '');
+  resultDiv.textContent = 'Result will appear here';
+});
+
+calculateBtn.addEventListener('click', calculate);
+</script>
+</body>
+</html>
