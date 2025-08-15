@@ -89,10 +89,27 @@
     color: white;
     cursor: pointer;
   }
-
   .right-div button:hover {
     background-color: #5748b5;
   }
+  .main-container {
+  display: flex;
+  height: 100vh;
+  gap: 20px;
+}
+.left-div {
+  flex: 7;
+  overflow-y: auto;
+}
+.right-div {
+  flex: 3;
+  background-color: #fff;
+  padding: 20px;
+  border-left: 2px solid #ccc;
+  overflow-y: auto;
+  box-sizing: border-box;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
 </style>
 </head>
 <body>
@@ -322,5 +339,6 @@ calculateBtn.addEventListener('click', calculate);
 </script>
 </body>
 </html>
+
 
 
