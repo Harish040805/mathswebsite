@@ -157,6 +157,11 @@
     </label>
   </div>
   <div class="button-container">
+<div class="column" style="width:100%; text-align:center; margin-top:10px;">
+  <button id="ratioBtn" style="padding:10px 15px; background-color:#6a5acd; color:white; border:none; border-radius:5px; cursor:pointer;">
+    Calculate Ratio
+  </button>
+</div>
     <button id="clearBtn">Clear All</button>
     <button id="calculateBtn">Calculate</button>
   </div>
@@ -350,9 +355,51 @@ clearBtn.addEventListener('click', () => {
 });
 
 calculateBtn.addEventListener('click', calculate);
+
+function calculateAdulterationRatio() {
+  const cp = parseFloat(costPrice.value) || 0;
+  const sp = parseFloat(sellingPrice.value) || 0;
+
+  if(cp <= 0 || sp <= 0){
+    alert("Please enter valid Cost Price and Selling Price.");
+    return;
+  }
+
+  const numerator = cp - sp;
+  const denominator = sp;
+
+  if(numerator <= 0){
+    alert("No adulteration detected or values incorrect.");
+    return;
+  }
+
+  const gcd = (a,b) => b === 0 ? a : gcd(b, a%b);
+  let num = numerator;
+  let denom = denominator;
+  let commonDivisor = gcd(Math.round(num*1000), Math.round(denom*1000));
+  num = (num*1000)/commonDivisor;
+  denom = (denom*1000)/commonDivisor;
+
+  resultDiv.textContent = `Adulteration Ratio (pure : mixture) ≈ ${Math.round(num)} : ${Math.round(denom)}`;
+}
+
+const ratioBtn = document.createElement('button');
+ratioBtn.textContent = "Calculate Adulteration Ratio";
+ratioBtn.style.padding = "10px 15px";
+ratioBtn.style.marginTop = "10px";
+ratioBtn.style.backgroundColor = "#6a5acd";
+ratioBtn.style.color = "white";
+ratioBtn.style.border = "none";
+ratioBtn.style.borderRadius = "5px";
+ratioBtn.style.cursor = "pointer";
+ratioBtn.onclick = calculateAdulterationRatio;
+
+document.querySelector('.container').appendChild(ratioBtn);
+
 </script>
 </body>
 </html>
+
 
 
 
