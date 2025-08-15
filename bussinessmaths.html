@@ -80,10 +80,25 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     font-size: 18px;
   }
+  .right-div button {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #6a5acd;
+    color: white;
+    cursor: pointer;
+  }
+
+  .right-div button:hover {
+    background-color: #5748b5;
+  }
 </style>
 </head>
 <body>
 <h1 class="page-title">Business Maths Simulator</h1>
+<div class="main-container">  
+<div class="left-div" style="flex: 7;">
 <div class="container">
   <h2>PROFIT & LOSS CALCULATOR</h2>
   <div class="column">
@@ -120,7 +135,74 @@
   </div>
 </div>
 <div class="result-container" id="result">Result will appear here</div>
+</div>
+<!-- Right Side Div: 30% -->
+<div class="right-div">
+  <h2 style="text-align:center;">Scientific Calculator</h2>
+  <input type="text" id="calcDisplay" placeholder="0" readonly style="width:100%; padding:10px; font-size:18px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;">
 
+  <div id="calcButtons" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
+    <!-- Numbers -->
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button onclick="appendValue('/')">÷</button>
+
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button onclick="appendValue('*')">×</button>
+
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button onclick="appendValue('-')">-</button>
+
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button onclick="calculateResult()">=</button>
+    <button onclick="appendValue('+')">+</button>
+
+    <!-- Scientific functions -->
+    <button onclick="appendFunction('Math.pow(')">x^y</button>
+    <button onclick="appendFunction('Math.sqrt(')">√</button>
+    <button onclick="appendFunction('Math.log(')">ln</button>
+    <button onclick="appendFunction('Math.sin(')">sin</button>
+    <button onclick="appendFunction('Math.cos(')">cos</button>
+    <button onclick="appendFunction('Math.tan(')">tan</button>
+    <button onclick="clearDisplay()">C</button>
+    <button onclick="deleteLast()">DEL</button>
+  </div>
+</div>
+</div>
+<script>
+  const display = document.getElementById('calcDisplay');
+
+  function appendValue(val){
+    display.value += val;
+  }
+
+  function appendFunction(func){
+    display.value += func;
+  }
+
+  function clearDisplay(){
+    display.value = '';
+  }
+
+  function deleteLast(){
+    display.value = display.value.slice(0,-1);
+  }
+
+  function calculateResult(){
+    try {
+      // Evaluate the string as JS math expression
+      display.value = eval(display.value);
+    } catch(e){
+      display.value = 'Error';
+    }
+  }
+</script>
 <script>
 const costPrice = document.getElementById('costPrice');
 const sellingPrice = document.getElementById('sellingPrice');
@@ -240,4 +322,5 @@ calculateBtn.addEventListener('click', calculate);
 </script>
 </body>
 </html>
+
 
