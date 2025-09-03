@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LCM | HCF | GCD Calculator</title>
+<style>
+  :root {
+    --gap: 16px;
+    --card-bg: #f7f7f7;
+    --card-border: #ddd;
+    --accent: #3b82f6;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 92vh;
+    padding: 24px;
+  }
+
+h3{
+    font-size: 27px;
+    color: #2563eb;
+}
+
+  .wrap {
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .main-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 21px;
+    transition: background 0.3s;
+  }
+
+  .main-btn:hover {
+    background: #2563eb;
+  }
+
+  .row {
+    display: flex;
+    gap: var(--gap);
+    flex-wrap: wrap;
+  }
+
+  .card {
+    flex: 1 1 calc(33.33% - var(--gap));
+    min-width: 260px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .card h3 {
+    margin: 0 0 12px 0;
+    color: var(--accent);
+  }
+
+  .inputs-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card input {
+    width: 80%;
+    padding: 8px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 20px;
+  }
+
+  .small-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 6px 0;
+  }
+
+  .result {
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #222;
+    min-height: 22px;
+  }
+
+  .hint {
+    font-size: 17px;
+    color: #666;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 720px) {
+    .card {
+      flex: 1 1 100%;
+    }
+    .card input {
+      width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h3><center>LCM, HCF, GCD Calculator</center></h3>
+    <br>    
+    <div class="row">
+      <!-- LCM -->
+      <div class="card">
+        <h3>LCM</h3>
+        <div class="inputs-container" id="lcmInputs">
+          <input type="number" placeholder="Enter a number">
+          <input type="number" placeholder="Enter a number">
+        </div>
+        <button class="small-btn" onclick="addInput('lcmInputs')">Add Number</button>
+        <div class="result" id="lcmResult"></div>
+        <div class="hint">Enter at least 2 numbers</div>
+      </div>
+
+      <!-- HCF -->
+      <div class="card">
+        <h3>HCF</h3>
+        <div class="inputs-container" id="hcfInputs">
+          <input type="number" placeholder="Enter a number">
+          <input type="number" placeholder="Enter a number">
+        </div>
+        <button class="small-btn" onclick="addInput('hcfInputs')">Add Number</button>
+        <div class="result" id="hcfResult"></div>
+        <div class="hint">Enter at least 2 numbers</div>
+      </div>
+
+      <!-- GCD -->
+      <div class="card">
+        <h3>GCD</h3>
+        <div class="inputs-container" id="gcdInputs">
+          <input type="number" placeholder="Enter a number">
+          <input type="number" placeholder="Enter a number">
+        </div>
+        <button class="small-btn" onclick="addInput('gcdInputs')">Add Number</button>
+        <div class="result" id="gcdResult"></div>
+        <div class="hint">Enter at least 2 numbers</div>
+      </div>
+    </div>
+    <br><br><br>
+    <div class="controls">
+      <button class="main-btn" onclick="computeAll()">Compute All</button>
+      <button class="main-btn" onclick="computeLCM()">Compute LCM</button>
+      <button class="main-btn" onclick="computeHCF()">Compute HCF</button>
+      <button class="main-btn" onclick="computeGCD()">Compute GCD</button>
+    </div>    
+  </div>
+
+  <script>
+    function gcd2(a, b) {
+      while (b !== 0) {
+        let t = a % b;
+        a = b;
+        b = t;
+      }
+      return Math.abs(a);
+    }
+
+    function gcdArray(arr) {
+      return arr.reduce((a, b) => gcd2(a, b));
+    }
+
+    function lcm2(a, b) {
+      if (a === 0 || b === 0) return 0;
+      return Math.abs((a / gcd2(a, b)) * b);
+    }
+
+    function lcmArray(arr) {
+      return arr.reduce((a, b) => lcm2(a, b));
+    }
+
+    function addInput(containerId) {
+      const container = document.getElementById(containerId);
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.placeholder = 'Enter a number';
+      container.appendChild(input);
+      input.focus();
+    }
+
+    function readNumbers(containerId) {
+      return Array.from(document.getElementById(containerId).querySelectorAll('input'))
+        .map(i => parseInt(i.value, 10))
+        .filter(v => Number.isInteger(v) && v > 0);
+    }
+
+    function computeLCM() {
+      const nums = readNumbers('lcmInputs');
+      document.getElementById('lcmResult').innerText =
+        nums.length >= 2 ? 'LCM = ' + lcmArray(nums) : 'Enter at least 2 numbers';
+    }
+
+    function computeHCF() {
+      const nums = readNumbers('hcfInputs');
+      document.getElementById('hcfResult').innerText =
+        nums.length >= 2 ? 'HCF = ' + gcdArray(nums) : 'Enter at least 2 numbers';
+    }
+
+    function computeGCD() {
+      const nums = readNumbers('gcdInputs');
+      document.getElementById('gcdResult').innerText =
+        nums.length >= 2 ? 'GCD = ' + gcdArray(nums) : 'Enter at least 2 numbers';
+    }
+
+    function computeAll() {
+      computeLCM();
+      computeHCF();
+      computeGCD();
+    }
+  </script>
+</body>
+</html>
