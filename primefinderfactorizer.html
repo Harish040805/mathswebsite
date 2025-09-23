@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prime Finder & Factorizer</title>
+<style>
+  :root{
+    --bg:#eef6ff;
+    --card:#fff;
+    --accent:#0b63d6;
+    --muted:#234567;
+  }
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg);
+    color:var(--muted);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:48px 16px;
+  }
+  .card{
+    width:760px;
+    max-width:96%;
+    background:var(--card);
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(12,40,80,0.08);
+    padding:28px;
+  }
+  h1{margin:0 0 6px; font-size:20px; color:var(--accent)}
+  p.lead{margin:0 0 18px; color:#345; font-size:14px}
+  .row{display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap}
+  input[type="number"]{
+    flex:1;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid rgba(12,50,120,0.08);
+    font-size:16px;
+  }
+  button{
+    background:var(--accent);
+    color:white;
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  button:active{transform:translateY(1px)}
+  .info{
+    margin-top:12px;
+    background:#f5fbff;
+    border:1px solid rgba(11,99,214,0.08);
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+  }
+  .output{
+    margin-top:18px;
+    padding:14px;
+    border-radius:8px;
+    background:linear-gradient(180deg,#ffffff,#f7fbff);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+    font-size:15px;
+    color:#052a4a;
+  }
+  .small{font-size:13px; color:#456}
+  .muted{color:#64748b}
+  .flex-between{display:flex; justify-content:space-between; align-items:center}
+  .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+  .chip{background:#eef3ff;padding:6px 10px;border-radius:999px;font-weight:600;color:#073a9a}
+</style>
+</head>
+<body>
+  <div class="card" role="main">
+    <div class="flex-between">
+      <div>
+        <h1>Prime Finder & Factorizer</h1>
+      </div>
+    </div>
+    <div class="row">
+      <input id="numInput" type="number" placeholder="Type an integer (also supports greater value and negative integers)" />
+      <button id="goBtn">Find Primes</button>
+      <button id="clearBtn" style="background:#e6eefc;color:var(--accent)">Clear</button>
+    </div>
+    <div id="out" class="output" aria-live="polite" style="min-height:64px">Enter a number and click <strong>Find Primes</strong>.</div>
+  </div>
+
+<script>
+const out = document.getElementById('out');
+const input = document.getElementById('numInput');
+document.getElementById('goBtn').addEventListener('click', run);
+document.getElementById('clearBtn').addEventListener('click', () => { input.value=''; out.innerHTML='Enter a number and click Find Primes.' });
+
+function run(){
+  const raw = input.value.trim();
+  if(!raw){
+    out.textContent = 'Please enter an integer.';
+    return;
+  }
+
+  let sign = 1n;
+  let s = raw;
+  if(s[0]==='+' || s[0]==='-'){
+    if(s[0]==='-') sign = -1n;
+    s = s.slice(1);
+  }
+  if(!/^\d+$/.test(s)){
+    out.textContent = 'Invalid input. Only integer digits (optionally leading + or -) are allowed.';
+    return;
+  }
+
+  try {
+    let n = BigInt(s) * sign;
+    displayFactorization(n);
+  } catch(e){
+    out.textContent = 'Invalid integer (too large?).';
+  }
+}
+
+function displayFactorization(n){
+  if(n === 0n){
+    out.innerHTML = '<strong>0</strong> — every nonzero integer divides 0 (infinite divisors).';
+    return;
+  }
+  if(n === 1n || n === -1n){
+    out.innerHTML = `${n.toString()} — ${n===1n? '1 is neither prime nor composite.' : '-1 is a unit (not prime).'}`;
+    return;
+  }
+
+  const signStr = n < 0n ? '-1 × ' : '';
+  const absN = n < 0n ? -n : n;
+
+  if(isProbablyPrime(absN)){
+    out.innerHTML = `${n.toString()} = ${signStr}<span class="chip">${absN.toString()}</span> <div class="small muted">(prime)</div>`;
+    return;
+  }
+
+  const factors = factorizeBigInt(absN); 
+  const compact = compressFactors(factors);
+  const compactStr = compact.map(([p,exp]) => exp===1 ? `${p.toString()}` : `${p.toString()}^${exp}`).join(' × ');
+  const expandedStr = factors.map(x => x.toString()).join(' × ');
+
+  out.innerHTML = `
+    <div><strong>${n.toString()}</strong></div>
+    <div style="margin-top:8px">${signStr}${expandedStr}</div>
+    <div class="small muted" style="margin-top:8px">${signStr}${compactStr}</div>
+    <div class="chips" aria-hidden="true" style="margin-top:10px">
+      ${[...new Set(factors.map(f=>f.toString()))].map(p=>`<div class="chip">${p}</div>`).join('')}
+    </div>
+  `;
+}
+
+function compressFactors(factors){
+  const map = [];
+  let i = 0;
+  while(i < factors.length){
+    const p = factors[i];
+    let cnt = 1;
+    i++;
+    while(i < factors.length && factors[i] === p){ cnt++; i++; }
+    map.push([p, cnt]);
+  }
+  return map;
+}
+
+function isProbablyPrime(n){
+  if(n < 2n) return false;
+  const smallPrimes = [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n];
+  for(const p of smallPrimes){
+    if(n === p) return true;
+    if(n % p === 0n) return false;
+  }
+  const limit = 1000n;
+  let i = 5n;
+  let w = 2n;
+  while(i * i <= n && i <= limit){
+    if(n % i === 0n) return false;
+    i += w;
+    w = 6n - w;
+  }
+  return true;
+}
+
+function factorizeBigInt(n){
+  let num = n;
+  const out = [];
+  while(num % 2n === 0n){
+    out.push(2n); num /= 2n;
+  }
+  while(num % 3n === 0n){
+    out.push(3n); num /= 3n;
+  }
+  let i = 5n;
+  let step = 2n;
+  const limit = bigintSqrt(num) + 1n;
+  while(i <= limit && num > 1n){
+    while(num % i === 0n){
+      out.push(i);
+      num /= i;
+    }
+    i += step;
+    step = 6n - step; 
+    if(i * i > num) break;
+  }
+
+  if(num > 1n){ 
+	out.push(num);
+  }
+
+  return out;
+}
+
+function bigintSqrt(value){
+  if(value < 0n) throw 'sqrt negative';
+  if(value < 2n) return value;
+  let x0 = value;
+  let x1 = (value >> 1n) + 1n;
+  while(x1 < x0){
+    x0 = x1;
+    x1 = (value / x1 + x1) >> 1n;
+  }
+  return x0;
+}
+</script>
+</body>
+</html>
