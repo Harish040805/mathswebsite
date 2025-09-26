@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Euler's φ (phi) — Calculator</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa7bf;--accent:#6ee7b7;--glass: rgba(255,255,255,0.03)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8f9fa;color:#111;padding:24px}
+    .wrap{width:100%;max-width:600px}
+    header{margin-bottom:18px}
+    header h1{font-size:24px;margin:0;color:#222}
+    .card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    label{display:block;font-size:14px;margin-bottom:8px;color:#555}
+    input[type="text"]{width:100%;padding:10px 12px;border-radius:6px;border:1px solid #ccc;font-size:15px}
+    button{padding:10px 14px;border-radius:6px;border:0;background:#0ea5a3;color:#fff;font-weight:600;cursor:pointer}
+    .result, .steps{margin-top:12px;padding:12px;border-radius:8px;background:#f1f3f5;border:1px solid #ccc;color:#111}
+    .error{color:#c00;background:#fee;padding:8px;border-radius:6px}
+    .step-line{margin-bottom:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Euler's φ (phi) — Calculator</h1>
+    </header>
+
+    <div class="card">
+      <label for="m">Enter a positive integer m:</label>
+      <input id="m" type="text" placeholder="Enter m" inputmode="numeric" />
+      <div style="margin-top:12px">
+        <button id="calc">Compute φ(m)</button>
+      </div>
+      <div id="steps" class="steps" style="display:none"></div>
+    </div>
+  </div>
+
+  <script>
+    function parseInput(s){
+      s = (s||"").trim();
+      if(!s || !/^\d+$/.test(s)) return null;
+      try{ return BigInt(s); } catch(e){ return null; }
+    }
+
+    function factorize(n){
+      let factors = new Map();
+      while(n % 2n === 0n){ factors.set('2',(factors.get('2')||0)+1); n/=2n; }
+      let f=3n; while(f*f<=n){
+        while(n%f===0n){ factors.set(f.toString(),(factors.get(f.toString())||0)+1); n/=f; }
+        f+=2n;
+      }
+      if(n>1n) factors.set(n.toString(),1);
+      return factors;
+    }
+
+    function computePhi(m){
+      if(m===0n) return 0n;
+      if(m===1n) return 1n;
+      const factors = factorize(m);
+      const primes = Array.from(factors.keys()).map(x=>BigInt(x));
+      let num=1n, den=1n;
+      for(const p of primes){ num*=(p-1n); den*=p; }
+      return {phi: (m*num)/den, factors, num, den, primes};
+    }
+
+    const inEl = document.getElementById('m');
+    const stepsEl = document.getElementById('steps');
+    const btn = document.getElementById('calc');
+
+    function showError(msg){ stepsEl.style.display='block'; stepsEl.innerHTML=`<div class="error">${msg}</div>`; }
+
+    function renderSteps(res, mStr){
+      const {phi, factors, num, den} = res;
+      let html = '';
+      html += `<div class="step-line"><strong>Title:</strong> Euler's φ (phi) Calculation</div>`;
+      html += `<div class="step-line"><strong>User input (m):</strong> ${mStr}</div>`;
+      const factorStr = Array.from(factors.entries()).map(([p,e])=> `${p}<sup>${e}</sup>`).join(' × ');
+      html += `<div class="step-line">φ(m) = φ(${factorStr})</div>`;
+      html += `<div class="step-line">φ(m) = ${mStr} × ${num} / ${den}</div>`;
+      html += `<div class="step-line">φ(m) = ${phi}</div>`;
+      stepsEl.style.display='block';
+      stepsEl.innerHTML = html;
+    }
+
+    btn.addEventListener('click',()=>{
+      const parsed = parseInput(inEl.value);
+      if(parsed===null || parsed<0n){ showError('Enter a valid positive integer.'); return; }
+      if(parsed>10n**30n){ showError('Number too large.'); return; }
+      const res = computePhi(parsed);
+      renderSteps(res, parsed.toString());
+    });
+
+    inEl.addEventListener('keydown',e=>{ if(e.key==='Enter') btn.click(); });
+  </script>
+</body>
+</html>
