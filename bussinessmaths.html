@@ -60,7 +60,7 @@
     gap: 15px;
   }
   .button-container button {
-    padding: 10px 20px;
+    padding: 2px 20px;
     font-size: 16px;
     border-radius: 5px;
     border: none;
@@ -108,9 +108,9 @@
   height: 70%;
 }
 .calculatorbody {
-  width: 100%;             /* full width of right-div */
-  max-width: 300px;        /* optional maximum width */
-  margin: auto;            /* center inside right-div */
+  width: 100%;
+  max-width: 300px;
+  margin: auto;
   background-color: #f4f4f8;
   padding: 15px;
   border-radius: 20px;
@@ -126,6 +126,8 @@
 <h1 class="page-title">Business Maths Simulator</h1>
 <div class="main-container">  
 <div class="left-div" style="flex: 7;">
+
+<!-- Profit & Loss Calculator -->
 <div class="container">
   <h2>PROFIT & LOSS CALCULATOR</h2>
   <div class="column">
@@ -160,82 +162,76 @@
       <button id="calculateBtn">Calculate</button>
       <button id="ratioBtn">Calculate Ratio</button>
       <button id="clearBtn">Clear All</button>
+      <div class="result-container" id="result">Profit/Loss result will appear here</div>
+  </div>
+  <br><br><br>
+  <div class="column">
+    <label>Principal Amount: &nbsp; &nbsp;
+      <input type="number" id="principal" placeholder="Enter principal amount">
+    </label>
+    <label>Rate of Interest (%): &nbsp;
+      <input type="number" id="rate" placeholder="Enter rate">
+    </label>
+    <label>Time (in years): &nbsp; &nbsp; &nbsp; &nbsp;
+      <input type="number" id="time" placeholder="Enter time">
+    </label>
+  </div>
+  <div class="button-container">
+    <button onclick="calculateSimpleInterest()">Calculate Simple Interest</button>
+    <button onclick="calculateCompoundInterest()">Calculate Compound Interest</button>
+    <div class="result-container" id="interestResult">Interest result will appear here</div>
   </div>
 </div>
-<div class="result-container" id="result">Result will appear here</div>
 </div>
-<!-- Right Side Div: 30% -->
+
+<!-- Right Side Div -->
 <div class="right-div">
   <div class="calculatorbody">
   <input type="text" id="calcDisplay" placeholder="0" readonly style="width:100%; padding:10px; font-size:18px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;">
-
   <div id="calcButtons" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">
     <button onclick="appendFunction('Math.pow(')">x^y</button>
     <button onclick="appendFunction('Math.sqrt(')">√</button>
     <button onclick="clearDisplay()">C</button>
     <button onclick="deleteLast()">DEL</button>
-
-    <!-- Scientific functions -->
-
     <button onclick="appendFunction('Math.log(')">ln</button>
     <button onclick="appendFunction('Math.sin(')">sin</button>
     <button onclick="appendFunction('Math.cos(')">cos</button>
     <button onclick="appendFunction('Math.tan(')">tan</button>
-    
-    <!-- Numbers -->
     <button onclick="appendValue('7')">7</button>
     <button onclick="appendValue('8')">8</button>
     <button onclick="appendValue('9')">9</button>
     <button onclick="appendValue('/')">÷</button>
-
     <button onclick="appendValue('4')">4</button>
     <button onclick="appendValue('5')">5</button>
     <button onclick="appendValue('6')">6</button>
     <button onclick="appendValue('*')">×</button>
-
     <button onclick="appendValue('1')">1</button>
     <button onclick="appendValue('2')">2</button>
     <button onclick="appendValue('3')">3</button>
     <button onclick="appendValue('-')">-</button>
-
     <button onclick="appendValue('0')">0</button>
     <button onclick="appendValue('.')">.</button>
     <button onclick="calculateResult()">=</button>
     <button onclick="appendValue('+')">+</button>
+  </div>
+  </div>
+</div>
+</div>
 
-  </div>
-  </div>
-</div>
-</div>
 <script>
   const display = document.getElementById('calcDisplay');
-
-  function appendValue(val){
-    display.value += val;
-  }
-
-  function appendFunction(func){
-    display.value += func;
-  }
-
-  function clearDisplay(){
-    display.value = '';
-  }
-
-  function deleteLast(){
-    display.value = display.value.slice(0,-1);
-  }
-
+  function appendValue(val){ display.value += val; }
+  function appendFunction(func){ display.value += func; }
+  function clearDisplay(){ display.value = ''; }
+  function deleteLast(){ display.value = display.value.slice(0,-1); }
   function calculateResult(){
-    try {
-      // Evaluate the string as JS math expression
-      display.value = eval(display.value);
-    } catch(e){
-      display.value = 'Error';
-    }
+    try { display.value = eval(display.value); } 
+    catch(e){ display.value = 'Error'; }
   }
 </script>
+
 <script>
+// Profit & Loss Section
 const costPrice = document.getElementById('costPrice');
 const sellingPrice = document.getElementById('sellingPrice');
 const marketPrice = document.getElementById('marketPrice');
@@ -349,58 +345,36 @@ clearBtn.addEventListener('click', () => {
   [costPrice, sellingPrice, marketPrice, profitAmount, profitPercentage, lossAmount, lossPercentage].forEach(i => i.value = '');
   resultDiv.textContent = 'Result will appear here';
 });
-
 calculateBtn.addEventListener('click', calculate);
 
-function calculateAdulterationRatio() {
-  const cp = parseFloat(costPrice.value) || 0;
-  const sp = parseFloat(sellingPrice.value) || 0;
+// Interest Calculator functions
+function calculateSimpleInterest() {
+  const p = parseFloat(document.getElementById("principal").value);
+  const r = parseFloat(document.getElementById("rate").value);
+  const t = parseFloat(document.getElementById("time").value);
 
-  if(cp <= 0 || sp <= 0){
-    alert("Please enter valid Cost Price and Selling Price.");
+  if (isNaN(p) || isNaN(r) || isNaN(t)) {
+    document.getElementById("interestResult").innerText = "Please enter valid numbers.";
     return;
   }
 
-  const numerator = cp - sp;
-  const denominator = sp;
-
-  if(numerator <= 0){
-    alert("No adulteration detected or values incorrect.");
-    return;
-  }
-
-  const gcd = (a,b) => b === 0 ? a : gcd(b, a%b);
-  let num = numerator;
-  let denom = denominator;
-  let commonDivisor = gcd(Math.round(num*1000), Math.round(denom*1000));
-  num = (num*1000)/commonDivisor;
-  denom = (denom*1000)/commonDivisor;
-
-  resultDiv.textContent = `Adulteration Ratio (pure : mixture) ≈ ${Math.round(num)} : ${Math.round(denom)}`;
+  const si = (p * r * t) / 100;
+  document.getElementById("interestResult").innerText = `Simple Interest = ₹${si.toFixed(2)}`;
 }
 
-const ratioBtn = document.createElement('button');
-ratioBtn.textContent = "Calculate Adulteration Ratio";
-ratioBtn.style.padding = "10px 15px";
-ratioBtn.style.marginTop = "10px";
-ratioBtn.style.backgroundColor = "#6a5acd";
-ratioBtn.style.color = "white";
-ratioBtn.style.border = "none";
-ratioBtn.style.borderRadius = "5px";
-ratioBtn.style.cursor = "pointer";
-ratioBtn.onclick = calculateAdulterationRatio;
+function calculateCompoundInterest() {
+  const p = parseFloat(document.getElementById("principal").value);
+  const r = parseFloat(document.getElementById("rate").value);
+  const t = parseFloat(document.getElementById("time").value);
 
-document.querySelector('.container').appendChild(ratioBtn);
+  if (isNaN(p) || isNaN(r) || isNaN(t)) {
+    document.getElementById("interestResult").innerText = "Please enter valid numbers.";
+    return;
+  }
 
+  const ci = p * (Math.pow((1 + r / 100), t)) - p;
+  document.getElementById("interestResult").innerText = `Compound Interest = ₹${ci.toFixed(2)}`;
+}
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
