@@ -167,18 +167,22 @@
   <br><br><br>
   <div class="column">
     <label>Principal Amount: &nbsp; &nbsp;
-      <input type="number" id="principal" placeholder="Enter principal amount">
+      <input type="number" id="principal" placeholder="Enter principal amount" oninput="updateInterest()">
     </label>
     <label>Rate of Interest (%): &nbsp;
-      <input type="number" id="rate" placeholder="Enter rate">
+      <input type="number" id="rate" placeholder="Enter rate" oninput="updateInterest()">
     </label>
     <label>Time (in years): &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="time" placeholder="Enter time">
+      <input type="number" id="time" placeholder="Enter time" oninput="updateInterest()">
+    </label>
+    <label>Simple Interest: &nbsp; &nbsp; &nbsp; &nbsp;
+      <input type="number" id="simpleInterest" placeholder="Enter Simple Interest" oninput="updateInterest()">
+    </label>
+    <label>Compound Interest: &nbsp; &nbsp;
+      <input type="number" id="compoundInterest" placeholder="Enter Compound Interest" oninput="updateInterest()">
     </label>
   </div>
   <div class="button-container">
-    <button onclick="calculateSimpleInterest()">Calculate Simple Interest</button>
-    <button onclick="calculateCompoundInterest()">Calculate Compound Interest</button>
     <div class="result-container" id="interestResult">Interest result will appear here</div>
   </div>
 </div>
@@ -347,33 +351,52 @@ clearBtn.addEventListener('click', () => {
 });
 calculateBtn.addEventListener('click', calculate);
 
-// Interest Calculator functions
-function calculateSimpleInterest() {
-  const p = parseFloat(document.getElementById("principal").value);
-  const r = parseFloat(document.getElementById("rate").value);
-  const t = parseFloat(document.getElementById("time").value);
+function updateInterest() {
+  const pEl = document.getElementById("principal");
+  const rEl = document.getElementById("rate");
+  const tEl = document.getElementById("time");
+  const siEl = document.getElementById("simpleInterest");
+  const ciEl = document.getElementById("compoundInterest");
+  const output = document.getElementById("interestResult");
 
-  if (isNaN(p) || isNaN(r) || isNaN(t)) {
-    document.getElementById("interestResult").innerText = "Please enter valid numbers.";
-    return;
+  let P = parseFloat(pEl.value);
+  let R = parseFloat(rEl.value);
+  let T = parseFloat(tEl.value);
+  let SI = parseFloat(siEl.value);
+  let CI = parseFloat(ciEl.value);
+
+  // Case 1: P, R, T given
+  if (!isNaN(P) && !isNaN(R) && !isNaN(T) && isNaN(SI) && isNaN(CI)) {
+    SI = (P * R * T) / 100;
+    CI = P * (Math.pow((1 + R / 100), T)) - P;
+    siEl.value = SI.toFixed(2);
+    ciEl.value = CI.toFixed(2);
+    output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
   }
 
-  const si = (p * r * t) / 100;
-  document.getElementById("interestResult").innerText = `Simple Interest = ₹${si.toFixed(2)}`;
-}
-
-function calculateCompoundInterest() {
-  const p = parseFloat(document.getElementById("principal").value);
-  const r = parseFloat(document.getElementById("rate").value);
-  const t = parseFloat(document.getElementById("time").value);
-
-  if (isNaN(p) || isNaN(r) || isNaN(t)) {
-    document.getElementById("interestResult").innerText = "Please enter valid numbers.";
-    return;
+  // Case 2: P, R, T and SI given → Find CI
+  else if (!isNaN(P) && !isNaN(R) && !isNaN(T) && !isNaN(SI) && isNaN(CI)) {
+    CI = P * (Math.pow((1 + R / 100), T)) - P;
+    ciEl.value = CI.toFixed(2);
+    output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
   }
 
-  const ci = p * (Math.pow((1 + r / 100), t)) - p;
-  document.getElementById("interestResult").innerText = `Compound Interest = ₹${ci.toFixed(2)}`;
+  // Case 3: P, R, T and CI given → Find SI
+  else if (!isNaN(P) && !isNaN(R) && !isNaN(T) && isNaN(SI) && !isNaN(CI)) {
+    SI = (P * R * T) / 100;
+    siEl.value = SI.toFixed(2);
+    output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
+  }
+
+  // Case 4: Both SI and CI given → Find P, R, T
+  else if (!isNaN(SI) && !isNaN(CI) && (isNaN(P) || isNaN(R) || isNaN(T))) {
+    // Assume same P, R, T relation → Approximation since infinite solutions exist
+    output.innerText = `Both SI and CI provided.\nCannot uniquely determine P, R, T without more data.`;
+  }
+
+  else {
+    output.innerText = "Interest result will appear here";
+  }
 }
 </script>
 </body>
