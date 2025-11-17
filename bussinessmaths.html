@@ -52,25 +52,15 @@ padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); disp
   </div>
   <br><br><br>
   <div class="column">
-    <label>Principal Amount: &nbsp; &nbsp;
-      <input type="number" id="principal" placeholder="Enter principal amount">
-    </label>
-    <label>Rate of Interest (%): &nbsp;
-      <input type="number" id="rate" placeholder="Enter rate">
-    </label>
-    <label>Time (in years): &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="time" placeholder="Enter time">
-    </label>
-    <label>Simple Interest: &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="simpleInterest" placeholder="Enter Simple Interest">
-    </label>
-    <label>Compound Interest: &nbsp; &nbsp;
-      <input type="number" id="compoundInterest" placeholder="Enter Compound Interest">
-    </label>
-      <div class="button-container"><button onclick="updateInterest()">Calculate Interest</button></div>
-  </div>
+    <label>Principal Amount: &nbsp; &nbsp;<input type="number" id="principal" placeholder="Enter principal amount"></label>
+    <label>Rate of Interest (%): &nbsp;<input type="number" id="rate" placeholder="Enter rate"></label>
+    <label>Time (in years): &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="time" placeholder="Enter time"></label>
+    <label>Simple Interest: &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
+    <label>Compound Interest: &nbsp; &nbsp;<input type="number" id="compoundInterest" placeholder="Enter Compound Interest"></label>
   <div class="button-container">
+    <div class="button-container"><button onclick="updateInterest()">Calculate Interest</button></div>
     <div class="result-container" id="interestResult">Interest result will appear here</div>
+  </div>
   </div>
 </div>
 </div>
@@ -261,3 +251,4 @@ function updateInterest() {
 </script>
 </body>
 </html>
+
