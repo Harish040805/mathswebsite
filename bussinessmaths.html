@@ -93,10 +93,10 @@
     background-color: #5748b5;
   }
   .main-container {
-  display: flex;
-  height: 100vh;
-  gap: 20px;
-}
+    display: flex;
+    height: 100vh;
+    gap: 20px;
+  }
 .left-div {
   flex: 7;
   overflow-y: auto;
@@ -126,8 +126,6 @@
 <h1 class="page-title">Business Maths Simulator</h1>
 <div class="main-container">  
 <div class="left-div" style="flex: 7;">
-
-<!-- Profit & Loss Calculator -->
 <div class="container">
   <h2>PROFIT & LOSS CALCULATOR</h2>
   <div class="column">
@@ -167,28 +165,27 @@
   <br><br><br>
   <div class="column">
     <label>Principal Amount: &nbsp; &nbsp;
-      <input type="number" id="principal" placeholder="Enter principal amount" oninput="updateInterest()">
+      <input type="number" id="principal" placeholder="Enter principal amount">
     </label>
     <label>Rate of Interest (%): &nbsp;
-      <input type="number" id="rate" placeholder="Enter rate" oninput="updateInterest()">
+      <input type="number" id="rate" placeholder="Enter rate">
     </label>
     <label>Time (in years): &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="time" placeholder="Enter time" oninput="updateInterest()">
+      <input type="number" id="time" placeholder="Enter time">
     </label>
     <label>Simple Interest: &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="simpleInterest" placeholder="Enter Simple Interest" oninput="updateInterest()">
+      <input type="number" id="simpleInterest" placeholder="Enter Simple Interest">
     </label>
     <label>Compound Interest: &nbsp; &nbsp;
-      <input type="number" id="compoundInterest" placeholder="Enter Compound Interest" oninput="updateInterest()">
+      <input type="number" id="compoundInterest" placeholder="Enter Compound Interest">
     </label>
+    <button onclick="updateInterest()">Calculate Interest</button>
   </div>
   <div class="button-container">
     <div class="result-container" id="interestResult">Interest result will appear here</div>
   </div>
 </div>
 </div>
-
-<!-- Right Side Div -->
 <div class="right-div">
   <div class="calculatorbody">
   <input type="text" id="calcDisplay" placeholder="0" readonly style="width:100%; padding:10px; font-size:18px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; box-sizing:border-box;">
@@ -221,7 +218,6 @@
   </div>
 </div>
 </div>
-
 <script>
   const display = document.getElementById('calcDisplay');
   function appendValue(val){ display.value += val; }
@@ -233,9 +229,7 @@
     catch(e){ display.value = 'Error'; }
   }
 </script>
-
 <script>
-// Profit & Loss Section
 const costPrice = document.getElementById('costPrice');
 const sellingPrice = document.getElementById('sellingPrice');
 const marketPrice = document.getElementById('marketPrice');
@@ -247,7 +241,6 @@ const resultDiv = document.getElementById('result');
 const clearBtn = document.getElementById('clearBtn');
 const calculateBtn = document.getElementById('calculateBtn');
 const quantity = document.getElementById('quantity');
-
 quantity.addEventListener('input', () => {
   if(quantity.value === '' || parseInt(quantity.value) < 1){
     quantity.value = 1;
@@ -263,7 +256,6 @@ function calculate() {
   let lAmt = parseFloat(lossAmount.value) || 0;
   let lPer = parseFloat(lossPercentage.value) || 0;
   let qty = parseInt(quantity.value) || 1;
-
   let computedCP = cp, computedSP = sp, computedMP = mp;
   let computedProfit = 0, computedProfitPer = 0, computedLoss = 0, computedLossPer = 0;
 
@@ -325,10 +317,8 @@ function calculate() {
     computedLossPer = (computedLoss / computedCP) * 100;
     computedMP = sp;
   }
-
   computedProfit *= qty;
   computedLoss *= qty;
-
   costPrice.value = computedCP ? computedCP.toFixed(2) : '';
   sellingPrice.value = computedSP ? computedSP.toFixed(2) : '';
   marketPrice.value = computedMP ? computedMP.toFixed(2) : '';
@@ -336,12 +326,10 @@ function calculate() {
   profitPercentage.value = computedProfitPer ? computedProfitPer.toFixed(2) : '';
   lossAmount.value = computedLoss ? computedLoss.toFixed(2) : '';
   lossPercentage.value = computedLossPer ? computedLossPer.toFixed(2) : '';
-
   let resultText = '';
   if(computedProfit) resultText = `Profit: ${computedProfit.toFixed(2)} (${computedProfitPer.toFixed(2)}%)`;
   else if(computedLoss) resultText = `Loss: ${computedLoss.toFixed(2)} (${computedLossPer.toFixed(2)}%)`;
   else resultText = 'Result will appear here';
-  
   resultDiv.textContent = resultText;
 }
 
@@ -365,7 +353,6 @@ function updateInterest() {
   let SI = parseFloat(siEl.value);
   let CI = parseFloat(ciEl.value);
 
-  // Case 1: P, R, T given
   if (!isNaN(P) && !isNaN(R) && !isNaN(T) && isNaN(SI) && isNaN(CI)) {
     SI = (P * R * T) / 100;
     CI = P * (Math.pow((1 + R / 100), T)) - P;
@@ -373,27 +360,19 @@ function updateInterest() {
     ciEl.value = CI.toFixed(2);
     output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
   }
-
-  // Case 2: P, R, T and SI given → Find CI
   else if (!isNaN(P) && !isNaN(R) && !isNaN(T) && !isNaN(SI) && isNaN(CI)) {
     CI = P * (Math.pow((1 + R / 100), T)) - P;
     ciEl.value = CI.toFixed(2);
     output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
   }
-
-  // Case 3: P, R, T and CI given → Find SI
   else if (!isNaN(P) && !isNaN(R) && !isNaN(T) && isNaN(SI) && !isNaN(CI)) {
     SI = (P * R * T) / 100;
     siEl.value = SI.toFixed(2);
     output.innerText = `Simple Interest = ₹${SI.toFixed(2)}\nCompound Interest = ₹${CI.toFixed(2)}`;
   }
-
-  // Case 4: Both SI and CI given → Find P, R, T
   else if (!isNaN(SI) && !isNaN(CI) && (isNaN(P) || isNaN(R) || isNaN(T))) {
-    // Assume same P, R, T relation → Approximation since infinite solutions exist
     output.innerText = `Both SI and CI provided.\nCannot uniquely determine P, R, T without more data.`;
   }
-
   else {
     output.innerText = "Interest result will appear here";
   }
