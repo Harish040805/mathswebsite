@@ -58,12 +58,14 @@ padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); disp
 <div style="display: flex; flex-wrap: wrap; gap: 20px; width: 100%;">
   <div class="columnn">
     <label>Principal Amount: <input type="number" id="principal" placeholder="Enter principal amount"></label>
-    <label>Rate of Interest (%): <input type="number" id="rate" placeholder="Enter rate"></label>
-    <label>Time (in years): <input type="number" id="time" placeholder="Enter time"></label>
+    <label>Simple Interest: <input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
   </div>
   <div class="columnn">
-    <label>Simple Interest: <input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
+    <label>Rate of Interest (%): <input type="number" id="rate" placeholder="Enter rate"></label>
     <label>Compound Interest: <input type="number" id="compoundInterest" placeholder="Enter Compound Interest"></label>
+  </div>
+  <div class="column">
+    <label>Time (in years): <input type="number" id="time" placeholder="Enter time"></label>
   </div>
   <div class="button-container">
     <button onclick="updateInterest()">Calculate Interest</button>
@@ -259,6 +261,7 @@ function updateInterest() {
 </script>
 </body>
 </html>
+
 
 
 
