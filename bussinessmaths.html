@@ -27,6 +27,10 @@ box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 18px;}
 .right-div {flex: 3; padding: 20px; overflow-y: auto; height: 70%;}
 .calculatorbody {width: 100%; max-width: 300px; margin: auto; background-color: #f4f4f8; 
 padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;}
+table {width: 100%; border-collapse: collapse;}
+tc {display: table-cell; vertical-align: top; padding: 10px 20px;}
+tc label {display: block; margin-bottom: 12px;}
+tc input {padding: 6px 8px; margin-left: 10px;}
 </style>
 </head>
 <body>
@@ -55,23 +59,21 @@ padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); disp
   </div>
   <br>
   <h2>INTEREST CALCULATOR</h2>
-<div style="display: flex; flex-wrap: wrap; gap: 20px; width: 100%;">
-  <div class="columnn">
+<table>
+  <tc>
     <label>Principal Amount: <input type="number" id="principal" placeholder="Enter principal amount"></label>
-    <label>Simple Interest: <input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
-  </div>
-  <div class="columnn">
     <label>Rate of Interest (%): <input type="number" id="rate" placeholder="Enter rate"></label>
-    <label>Compound Interest: <input type="number" id="compoundInterest" placeholder="Enter Compound Interest"></label>
-  </div>
-  <div class="column">
     <label>Time (in years): <input type="number" id="time" placeholder="Enter time"></label>
-  </div>
+  </tc>
+  <tc>
+    <label>Simple Interest: <input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
+    <label>Compound Interest: <input type="number" id="compoundInterest" placeholder="Enter Compound Interest"></label>
+  </tc>
+</table>
   <div class="button-container">
     <button onclick="updateInterest()">Calculate Interest</button>
     <div class="result-container" id="interestResult">Interest result will appear here</div>
   </div>
-</div>
 </div>
 </div>
 <div class="right-div">
@@ -261,6 +263,7 @@ function updateInterest() {
 </script>
 </body>
 </html>
+
 
 
 
