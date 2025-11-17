@@ -129,32 +129,16 @@
 <div class="container">
   <h2>PROFIT & LOSS CALCULATOR</h2>
   <div class="column">
-    <label for="costPrice">Cost Price &nbsp; &nbsp; &nbsp; &nbsp;
-    <input type="number" id="costPrice" placeholder="Enter Cost Price">
-    </label>
-    <label for="sellingPrice">Selling Price &nbsp; &nbsp;
-    <input type="number" id="sellingPrice" placeholder="Enter Selling Price">
-    </label>
-    <label for="marketPrice">Market Price &nbsp; &nbsp;
-    <input type="number" id="marketPrice" placeholder="Enter Market Price">
-    </label>
-    <label for="quantity">Quantity &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      <input type="number" id="quantity" placeholder="Enter Quantity" value="1" min="1">
-    </label>
+    <label for="costPrice">Cost Price &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="costPrice" placeholder="Enter Cost Price"></label>
+    <label for="sellingPrice">Selling Price &nbsp; &nbsp;<input type="number" id="sellingPrice" placeholder="Enter Selling Price"></label>
+    <label for="marketPrice">Market Price &nbsp; &nbsp;<input type="number" id="marketPrice" placeholder="Enter Market Price"></label>
+    <label for="quantity">Quantity &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="quantity" placeholder="Enter Quantity" value="1" min="1"></label>
   </div>
   <div class="column">
-    <label for="profitAmount">Profit Amount &nbsp; &nbsp; &nbsp; &nbsp;
-    <input type="number" id="profitAmount" placeholder="Profit Amount">
-    </label>
-    <label for="profitPercentage">Profit Percentage &nbsp;
-    <input type="number" id="profitPercentage" placeholder="Profit Percentage">
-    </label>
-    <label for="lossAmount">Loss Amount &nbsp; &nbsp; &nbsp; &nbsp;
-    <input type="number" id="lossAmount" placeholder="Loss Amount">
-    </label>
-    <label for="lossPercentage">Loss Percentage &nbsp;
-    <input type="number" id="lossPercentage" placeholder="Loss Percentage">
-    </label>
+    <label for="profitAmount">Profit Amount &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="profitAmount" placeholder="Profit Amount"></label>
+    <label for="profitPercentage">Profit Percentage &nbsp;<input type="number" id="profitPercentage" placeholder="Profit Percentage"></label>
+    <label for="lossAmount">Loss Amount &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="lossAmount" placeholder="Loss Amount"></label>
+    <label for="lossPercentage">Loss Percentage &nbsp;<input type="number" id="lossPercentage" placeholder="Loss Percentage"></label>
   </div>
   <div class="button-container">
       <button id="calculateBtn">Calculate</button>
@@ -179,7 +163,7 @@
     <label>Compound Interest: &nbsp; &nbsp;
       <input type="number" id="compoundInterest" placeholder="Enter Compound Interest">
     </label>
-    <button onclick="updateInterest()">Calculate Interest</button>
+      <div class="button-container"><button onclick="updateInterest()">Calculate Interest</button></div>
   </div>
   <div class="button-container">
     <div class="result-container" id="interestResult">Interest result will appear here</div>
@@ -380,3 +364,4 @@ function updateInterest() {
 </script>
 </body>
 </html>
+
