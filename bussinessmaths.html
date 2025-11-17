@@ -10,8 +10,11 @@ h1.page-title {text-align: center; color: #333; margin-bottom: 20px;}
 .container {max-width: 800px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 50px; display: flex; flex-wrap: wrap; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .container h2 {width: 100%; text-align: center; margin-bottom: 20px; color: #333;}
 .column {flex: 1 1 45%; display: flex; flex-direction: column; gap: 15px;}
+.columnn {flex: 1 1 45%; display: flex; flex-direction: column; gap: 15px;}
 .column label {font-weight: bold; margin-bottom: 5px;}
+.columnn label {font-weight: bold; margin-bottom: 5px;}
 .column input {padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 60%; box-sizing: border-box;}
+.columnn input {padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 30%; box-sizing: border-box;}
 .button-container {width: 100%; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;}
 .button-container button {padding: 2px 20px; font-size: 16px; border-radius: 5px; border: none; background-color: #6a5acd; color: white; cursor: pointer;}
 .button-container button:hover {background-color: #5748b5;}
@@ -50,15 +53,15 @@ padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); disp
       <button id="clearBtn">Clear All</button>
       <div class="result-container" id="result">Profit/Loss result will appear here</div>
   </div>
-  <br><br><br>
+  <br>
   <h2>INTEREST CALCULATOR</h2>
 <div style="display: flex; flex-wrap: wrap; gap: 20px; width: 100%;">
-  <div class="column">
+  <div class="columnn">
     <label>Principal Amount: <input type="number" id="principal" placeholder="Enter principal amount"></label>
     <label>Rate of Interest (%): <input type="number" id="rate" placeholder="Enter rate"></label>
     <label>Time (in years): <input type="number" id="time" placeholder="Enter time"></label>
   </div>
-  <div class="column">
+  <div class="columnn">
     <label>Simple Interest: <input type="number" id="simpleInterest" placeholder="Enter Simple Interest"></label>
     <label>Compound Interest: <input type="number" id="compoundInterest" placeholder="Enter Compound Interest"></label>
   </div>
@@ -256,5 +259,6 @@ function updateInterest() {
 </script>
 </body>
 </html>
+
 
 
