@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equation Arbitrator</title>
+<style>
+html, body { height: auto; min-height: 100%; overflow: auto; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.main { display: flex; flex-direction: row; gap: 30px; padding: 20px; flex-wrap: nowrap; justify-content: center; overflow-x: auto; overflow-y: visible; }
+.main::-webkit-scrollbar { display: none; }
+body{ background:#676767; margin:0; padding:0; color:#fff; font-family:Arial, sans-serif; overflow:hidden; }
+h1{ text-align:center; font-size:60px; margin-top:40px; }
+.block{ background:#555; padding:20px; border-radius:10px; display:flex; flex-direction:column; gap:15px; min-width:300px; }
+input,button{ padding:12px; font-size:18px; border:none; border-radius:5px; }
+button{ background:#000; color:#fff; cursor:pointer; }
+.output{ padding:12px; background:#fff; color:#000; font-size:20px; border-radius:5px; min-height:40px; }
+.varBox{ display:flex; flex-direction:column; gap:10px; }
+.addRemove{ display:flex; justify-content:center; gap:20px; }
+.plus, .minus{ width:60px; font-size:30px; font-weight:bold; }
+</style>
+</head>
+<body>
+<h1>Equation Arbitrator</h1>
+<div class="addRemove">
+    <button class="plus" onclick="addBlock()">+</button>
+    <button class="minus" onclick="removeBlock()">-</button>
+</div>
+<div id="main" class="main"></div>
+<script>
+let count=0;
+function addBlock(){
+    count++;
+    let block=document.createElement("div");
+    block.className="block";
+    block.id="block_"+count;
+    block.innerHTML=`
+        <input id="eq_${count}" type="text" placeholder="Enter equation">
+        <button onclick="detectVars(${count})">Detect Variables</button>
+        <div id="vars_${count}" class="varBox"></div>
+        <div class="output" id="out_${count}"></div>
+    `;
+    document.getElementById("main").appendChild(block);
+    document.getElementById("eq_"+count).oninput=function(){ dynamicSolve(count); };
+}
+function removeBlock(){ if(count>0){ let block=document.getElementById("block_"+count); block.remove(); count--; } }
+function detectVars(id){
+    let eq=document.getElementById("eq_"+id).value;
+    let varsContainer=document.getElementById("vars_"+id);
+    varsContainer.innerHTML="";
+    let vars=[...new Set(eq.replace(/[^a-zA-Z]/g,"").split(""))];
+    vars.forEach(v=>{ let i=document.createElement("input"); i.type="number"; i.placeholder=v+" value"; 
+                        i.id="var_"+id+"_"+v; i.oninput=function(){ dynamicSolve(id); }; varsContainer.appendChild(i);
+                    });
+                dynamicSolve(id);
+}
+function convertToJS(expr){
+    expr = expr.replace(/([0-9])([a-zA-Z])/g, "$1*$2");    
+    expr = expr.replace(/([a-zA-Z])([0-9])/g, "$1*$2");    
+    expr = expr.replace(/([a-zA-Z])\(/g, "$1*(");
+    expr = expr.replace(/\)([a-zA-Z])/g, ")*$1");
+    expr = expr.replace(/\)\(/g, ")*(");
+    return expr;
+}
+function dynamicSolve(id){
+    let eq=document.getElementById("eq_"+id).value;
+    let jsEq=convertToJS(eq);
+    let vars=[...new Set(eq.replace(/[^a-zA-Z]/g,"").split(""))];
+    let args=[];
+    let vals=[];
+    vars.forEach(v=>{
+        args.push(v);
+        let box=document.getElementById("var_"+id+"_"+v);
+        vals.push(box && box.value!=="" ? parseFloat(box.value) : 0);
+    });
+    try{
+        let result=Function(...args,"return "+jsEq)(...vals);
+        document.getElementById("out_"+id).innerText=result;
+    }catch(e){ document.getElementById("out_"+id).innerText="Invalid equation"; }
+}
+addBlock();
+</script>
+</body>
+</html>
