@@ -31,60 +31,31 @@ button:hover{background:#0052cc}
 </style>
 </head>
 <body>
-<div class="titleo">
-  <h1>Linear Congruence</h1>
-</div>
+<div class="titleo"><h1>Linear Congruence</h1></div>
 <div class="grid-container">
-  <div class="card">
-    <ul id="equations" class="equations"></ul>
-  </div>
+  <div class="card"><ul id="equations" class="equations"></ul></div>
   <div class="table-container" id="bottomGrid">
-    <div class="header">a</div>
-    <div class="header">m</div>
-    <div class="header tooltip">
-  M (formula)
-  <span class="tooltiptext">M_i = (m1×m2×…×mn) / m_i</span>
-</div>
+    <div class="header">a</div><div class="header">m</div>
+    <div class="header tooltip">M (formula)<span class="tooltiptext">M_i = (m1×m2×…×mn) / m_i</span></div>
   </div>
 </div>
-<div class="taskbar">
-  <button id="addBtn">Add Equation</button>
-  <button id="solveBtn">Solve</button>
-</div>
-<div class="card" id="solveContainer" style="display:none; margin-top:20px;">
-  <div class="table-container" id="solveGrid"></div>
-</div>
+<div class="taskbar"><button id="addBtn">Add Equation</button><button id="solveBtn">Solve</button></div>
+<div class="card" id="solveContainer" style="display:none; margin-top:20px;"><div class="table-container" id="solveGrid"></div></div>
 <script>
 const solveBtn = document.getElementById('solveBtn');
 const solveContainer = document.getElementById('solveContainer');
 const solveGrid = document.getElementById('solveGrid');
 const leastValuesDiv = document.getElementById('leastValues');
-
-function modInverse(a, m) {
-  let m0 = m, t, q;
-  let x0 = 0, x1 = 1;
-  if (m === 1) return 0;
-  while (a > 1) {
-    q = Math.floor(a / m);
-    t = m;
-    m = a % m; a = t;
-    t = x0;
-    x0 = x1 - q * x0;
-    x1 = t;
-  }
-  if (x1 < 0) x1 += m0;
-  return x1;
-}
-
+function modInverse(a, m) { let m0 = m, t, q; let x0 = 0, x1 = 1; if (m === 1) return 0;
+  while (a > 1) { q = Math.floor(a / m); t = m; m = a % m; a = t; t = x0; x0 = x1 - q * x0; x1 = t; } 
+  if (x1 < 0) x1 += m0; return x1; }
 solveBtn.onclick = () => {
   if(equations.length === 0) return;
   solveContainer.style.display = 'block';
   solveGrid.innerHTML = '';
   solveGrid.style.gridTemplateColumns = `repeat(${equations.length}, 1fr)`;
-
   const mValues = equations.map(r => Number(r.mInput.value) || 1);
   const product = mValues.reduce((acc,v)=>acc*v,1);
-
   equations.forEach((r, idx) => {
     const mVal = Number(r.mInput.value);
     const MVal = product / mVal;
@@ -94,80 +65,57 @@ solveBtn.onclick = () => {
     cell.readOnly = true;
     solveGrid.appendChild(cell);
   });
-
   const leastValuesText = equations.map((r, idx) => `y${idx+1}=${yiValues[idx]}`).join('; ');
   leastValuesDiv.textContent = `The least possible values are ${leastValuesText}`;
 };
 </script>
-
 <script>
 const list = document.getElementById('equations');
 const addBtn = document.getElementById('addBtn');
 const bottomGrid = document.getElementById('bottomGrid');
-
 let equations = [];
-
 function addEquation(){
   const li = document.createElement('li');
   li.innerHTML = `x = <input type="number" class="a"/> (mod <input type="number" class="m"/>)`;
-  
   const del = document.createElement('button');
   del.textContent = 'X';
   del.className = 'del';
-  del.onclick = () => {
-    li.remove();
-    const idx = equations.indexOf(rowObj);
-    if(idx > -1) equations.splice(idx,1);
-    updateBottomGrid();
-  };
+  del.onclick = () => { li.remove(); const idx = equations.indexOf(rowObj); if(idx > -1) equations.splice(idx,1); updateBottomGrid(); };
   li.appendChild(del);
   list.appendChild(li);
-
   const aInput = li.querySelector('.a');
   const mInput = li.querySelector('.m');
-
   const rowObj = {aInput, mInput};
   equations.push(rowObj);
-
-  function updateRow(){
-    updateBottomGrid();
-  }
-
+  function updateRow(){ updateBottomGrid(); }
   aInput.addEventListener('input', updateRow);
   mInput.addEventListener('input', updateRow);
   updateBottomGrid();
 }
-
 function updateBottomGrid(){
   bottomGrid.innerHTML = `
     <div class="header">a</div>
     <div class="header">m</div>
     <div class="header">M</div>
   `;
-
   const mValues = equations.map(r => Number(r.mInput.value) || 1);
   const product = mValues.reduce((acc,v)=>acc*v,1);
-
   equations.forEach((r, idx)=>{
     const aVal = r.aInput.value || '';
     const mVal = r.mInput.value || '';
     const MVal = mVal ? product / Number(mVal) : '';
-
     const inputA = document.createElement('input');
     inputA.value = aVal; inputA.readOnly = true;
     const inputM = document.createElement('input');
     inputM.value = mVal; inputM.readOnly = true;
     const inputMx = document.createElement('input');
     inputMx.value = MVal; inputMx.readOnly = true;
-
     bottomGrid.appendChild(inputA);
     bottomGrid.appendChild(inputM);
     bottomGrid.appendChild(inputMx);
   });
 }
-
 addBtn.onclick = addEquation;
-
 </script>
 </body>
 </html>
