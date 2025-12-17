@@ -22,10 +22,7 @@
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>Euler's φ (phi) — Calculator</h1>
-    </header>
-
+    <header><h1>Euler's φ (phi) — Calculator</h1></header>
     <div class="card">
       <label for="m">Enter a positive integer m:</label>
       <input id="m" type="text" placeholder="Enter m" inputmode="numeric" />
@@ -35,14 +32,8 @@
       <div id="steps" class="steps" style="display:none"></div>
     </div>
   </div>
-
   <script>
-    function parseInput(s){
-      s = (s||"").trim();
-      if(!s || !/^\d+$/.test(s)) return null;
-      try{ return BigInt(s); } catch(e){ return null; }
-    }
-
+    function parseInput(s){ s = (s||"").trim(); if(!s || !/^\d+$/.test(s)) return null; try{ return BigInt(s); } catch(e){ return null; } }
     function factorize(n){
       let factors = new Map();
       while(n % 2n === 0n){ factors.set('2',(factors.get('2')||0)+1); n/=2n; }
@@ -53,7 +44,6 @@
       if(n>1n) factors.set(n.toString(),1);
       return factors;
     }
-
     function computePhi(m){
       if(m===0n) return 0n;
       if(m===1n) return 1n;
@@ -63,13 +53,10 @@
       for(const p of primes){ num*=(p-1n); den*=p; }
       return {phi: (m*num)/den, factors, num, den, primes};
     }
-
     const inEl = document.getElementById('m');
     const stepsEl = document.getElementById('steps');
     const btn = document.getElementById('calc');
-
     function showError(msg){ stepsEl.style.display='block'; stepsEl.innerHTML=`<div class="error">${msg}</div>`; }
-
     function renderSteps(res, mStr){
       const {phi, factors, num, den} = res;
       let html = '';
@@ -82,7 +69,6 @@
       stepsEl.style.display='block';
       stepsEl.innerHTML = html;
     }
-
     btn.addEventListener('click',()=>{
       const parsed = parseInput(inEl.value);
       if(parsed===null || parsed<0n){ showError('Enter a valid positive integer.'); return; }
@@ -90,7 +76,6 @@
       const res = computePhi(parsed);
       renderSteps(res, parsed.toString());
     });
-
     inEl.addEventListener('keydown',e=>{ if(e.key==='Enter') btn.click(); });
   </script>
 </body>
