@@ -1,1 +1,26 @@
-
+body {font-family: Arial, sans-serif; background-color: #fff2b1; margin: 0; padding: 20px;}
+h1.page-title {text-align: center; color: #333; margin-bottom: 20px;}
+.container {max-width: 800px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 50px; display: flex; flex-wrap: wrap; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.container h2 {width: 100%; text-align: center; margin-bottom: 20px; color: #333;}
+.column {flex: 1 1 45%; display: flex; flex-direction: column; gap: 15px;}
+.columnn {flex: 1 1 45%; display: flex; flex-direction: column; gap: 15px;}
+.column label {font-weight: bold; margin-bottom: 5px;}
+.columnn label {font-weight: bold; margin-bottom: 5px;}
+.column input {padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 60%; box-sizing: border-box;}
+.columnn input {padding: 8px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 30%; box-sizing: border-box;}
+.button-container {width: 100%; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;}
+.button-container button {padding: 2px 20px; font-size: 16px; border-radius: 5px; border: none; background-color: #6a5acd; color: white; cursor: pointer;}
+.button-container button:hover {background-color: #5748b5;}
+.result-container {max-width: 800px; margin: 20px auto 0 auto; background-color: #ffffff; padding: 15px; border-radius: 10px; 
+box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 18px;}
+.right-div button {padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; background-color: #6a5acd; color: white; cursor: pointer;}
+.right-div button:hover {background-color: #5748b5;}
+.main-container {display: flex; height: 100vh; gap: 20px;}
+.left-div {flex: 7; overflow-y: auto;}
+.right-div {flex: 3; padding: 20px; overflow-y: auto; height: 70%;}
+.calculatorbody {width: 100%; max-width: 300px; margin: auto; background-color: #f4f4f8; 
+padding: 15px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;}
+table {width: 100%; border-collapse: collapse;}
+tc {display: table-cell; vertical-align: top; padding: 10px 20px;}
+tc label {display: block; margin-bottom: 12px;}
+tc input {padding: 6px 8px; margin-left: 10px;}
