@@ -161,7 +161,6 @@ function calculate() {
   let qty = parseInt(quantity.value) || 1;
   let computedCP = cp, computedSP = sp, computedMP = mp;
   let computedProfit = 0, computedProfitPer = 0, computedLoss = 0, computedLossPer = 0;
-
   if(cp && sp){
     if(sp > cp){ computedProfit = sp - cp; computedProfitPer = (computedProfit / cp) * 100; } 
     else if(cp > sp){ computedLoss = cp - sp; computedLossPer = (computedLoss / cp) * 100; }
@@ -230,7 +229,6 @@ function calculate() {
   else resultText = 'Result will appear here';
   resultDiv.textContent = resultText;
 }
-
 clearBtn.addEventListener('click', () => {
   [costPrice, sellingPrice, marketPrice, profitAmount, profitPercentage, lossAmount, lossPercentage].forEach(i => i.value = '');
   resultDiv.textContent = 'Result will appear here';
@@ -244,13 +242,11 @@ function updateInterest() {
   const siEl = document.getElementById("simpleInterest");
   const ciEl = document.getElementById("compoundInterest");
   const output = document.getElementById("interestResult");
-
   let P = parseFloat(pEl.value);
   let R = parseFloat(rEl.value);
   let T = parseFloat(tEl.value);
   let SI = parseFloat(siEl.value) || NaN;
   let CI = parseFloat(ciEl.value) || NaN;
-
   if (!isNaN(P) && !isNaN(R) && !isNaN(T) && isNaN(SI) && isNaN(CI)) {
     SI = (P * R * T) / 100;
     CI = P * (Math.pow((1 + R / 100), T)) - P;
@@ -276,10 +272,3 @@ function updateInterest() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
