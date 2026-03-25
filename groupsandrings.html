@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groups and Rings Visualizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+body { margin: 0; overflow: hidden; background: #0f172a; }
+    #controls { position: absolute; top: 20px; left: 20px; z-index: 10; width: 340px; }
+    
+    /* Added whitespace-nowrap and overflow-hidden to keep everything on one line */
+    .btn-prop { 
+        @apply w-full text-left px-4 py-3 rounded border border-slate-200 bg-slate-50 
+               text-slate-700 transition-all mb-2 flex items-center text-[10px] 
+               font-bold uppercase tracking-tight whitespace-nowrap overflow-hidden; 
+    }
+    .btn-active { @apply bg-blue-600 border-blue-700 text-white shadow-lg; }
+    
+    /* Ensures the number and text stay glued to the left */
+    .btn-prop span { pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div id="controls" class="bg-white/95 backdrop-blur p-6 rounded-2xl shadow-2xl border border-slate-200">
+        <h1 class="text-xl font-black text-slate-900 mb-1">Groups and Rings Visualizer</h1>
+        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter mb-4">Property Hierarchy Visualization</p>
+        
+<div id="button-container">
+    <button onclick="activateLevel(0)" id="btn-0" class="btn-prop bg-slate-200 border-slate-300">
+        <span>0. Random (Universal Set)</span>
+    </button>
+    <button onclick="activateLevel(1)" id="btn-1" class="btn-prop">
+        <span>1. Closure (Defined Set)</span>
+    </button>
+    <button onclick="activateLevel(2)" id="btn-2" class="btn-prop">
+        <span>2. Associative (Semi-Group)</span>
+    </button>
+    <button onclick="activateLevel(3)" id="btn-3" class="btn-prop">
+        <span>3. Identity (Monoid)</span>
+    </button><br>
+    <button onclick="activateLevel(4)" id="btn-4" class="btn-prop">
+        <span>4. Inverse (Group)</span>
+    </button>
+    <button onclick="activateLevel(5)" id="btn-5" class="btn-prop">
+        <span>5. Commutative (Abelian)</span>
+    </button>
+</div>
+
+        <div id="explanation" class="mt-4 p-4 bg-slate-800 rounded-lg text-xs text-slate-100 leading-relaxed font-medium min-h-[80px]">
+            Select a property to see the mathematical transformation.
+        </div>
+    </div>
+
+    <script>
+let people = [];
+        let currentLevel = 0;
+        const numPeople = 60;
+        let setSize = 480; 
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for (let i = 0; i < numPeople; i++) people.push(new Person(i));
+        }
+
+        function draw() {
+            background(15, 23, 42);
+            let center = createVector(width/2, height/2);
+
+            if (currentLevel >= 1) {
+                noFill();
+                stroke(50, 70, 100);
+                strokeWeight(2);
+                drawingContext.setLineDash([10, 10]);
+                rectMode(CENTER);
+                rect(center.x, center.y, setSize, setSize);
+                drawingContext.setLineDash([]);
+            }
+
+            for (let p of people) {
+                p.logic(currentLevel);
+                p.update();
+                p.display();
+            }
+        }
+
+        class Person {
+            constructor(id) {
+                this.id = id;
+                this.pos = createVector(random(width), random(height));
+                this.vel = p5.Vector.random2D().mult(1.5);
+                this.isIdentity = (id === 0);
+            }
+
+            logic(level) {
+                let center = createVector(width/2, height/2);
+                
+                // UNIVERSAL WRAPPING (Levels 1-5)
+                if (level >= 1) {
+                    let left = center.x - setSize/2;
+                    let right = center.x + setSize/2;
+                    let top = center.y - setSize/2;
+                    let bottom = center.y + setSize/2;
+                    if (this.pos.x < left) this.pos.x = right;
+                    if (this.pos.x > right) this.pos.x = left;
+                    if (this.pos.y < top) this.pos.y = bottom;
+                    if (this.pos.y > bottom) this.pos.y = top;
+                }
+
+                // SPECIFIC LEVEL LOGIC (Mutually Exclusive to prevent glitches)
+                if (level === 0) {
+                    // Random movement handled by update()
+                } 
+                else if (level === 1) {
+                    // Closure: Just floating inside the box
+                }
+                else if (level === 2) {
+                    // Associative: Grouping
+                    let p1 = people[(this.id + 1) % numPeople];
+                    let d1 = dist(this.pos.x, this.pos.y, p1.pos.x, p1.pos.y);
+                    if (d1 > 60) this.vel.add(p5.Vector.sub(p1.pos, this.pos).setMag(0.15));
+                }
+                else if (level === 3) {
+                    // Identity
+                    if (this.isIdentity) {
+                        this.pos.lerp(center, 0.1);
+                        this.vel.mult(0);
+                    } else {
+                        let pull = p5.Vector.sub(center, this.pos).setMag(0.05);
+                        this.vel.add(pull);
+                    }
+                }
+                else if (level === 4) {
+                    // Inverse
+                    if (this.isIdentity) {
+                        this.pos.lerp(center, 0.1);
+                        this.vel.mult(0);
+                    } else {
+                        let partnerId = (numPeople - this.id) % numPeople;
+                        let partner = people[partnerId];
+                        let midpoint = p5.Vector.add(this.pos, partner.pos).mult(0.5);
+                        let error = p5.Vector.sub(center, midpoint);
+                        this.vel.add(error.mult(0.08));
+                        // Keep them moving in a balanced flow
+                        this.vel.add(p5.Vector.sub(center, this.pos).setMag(0.02));
+                    }
+                }
+                else if (level === 5) {
+                    // Abelian: Grid/Orbit
+                    let angle = (TWO_PI / numPeople) * this.id;
+                    let orbitRadius = this.isIdentity ? 0 : 40; 
+                    let target = createVector(
+                        center.x + cos(angle) * orbitRadius,
+                        center.y + sin(angle) * orbitRadius
+                    );
+                    this.pos.lerp(target, 0.1);
+                    this.vel.mult(0.5);
+                }
+            }
+
+            update() {
+                this.pos.add(this.vel);
+                this.vel.limit(currentLevel === 5 ? 1 : 2.5);
+                
+                if (currentLevel === 0) {
+                    if (this.pos.x < 0 || this.pos.x > width) this.vel.x *= -1;
+                    if (this.pos.y < 0 || this.pos.y > height) this.vel.y *= -1;
+                }
+            }
+
+            display() {
+                noStroke();
+                // Color logic
+                if (currentLevel >= 3 && this.isIdentity) fill(255, 215, 0); 
+                else if (currentLevel === 5) fill(168, 85, 247); 
+                else if (currentLevel >= 1) fill(59, 130, 246); 
+                else fill(255);
+                
+                ellipse(this.pos.x, this.pos.y, 8, 8);
+
+                // Connections
+                if (currentLevel === 4 && !this.isIdentity) {
+                    stroke(255, 215, 0, 60);
+                    let partnerId = (numPeople - this.id) % numPeople;
+                    line(this.pos.x, this.pos.y, people[partnerId].pos.x, people[partnerId].pos.y);
+                }
+                if (currentLevel === 2) {
+                    stroke(255, 100);
+                    let pNext = people[(this.id + 1) % numPeople];
+                    line(this.pos.x, this.pos.y, pNext.pos.x, pNext.pos.y);
+                }
+            }
+        }
+
+        function activateLevel(lvl) {
+            currentLevel = lvl;
+            
+            // RESET PHYSICS: Give stars a random "kick" when changing levels
+            // This prevents them from getting stuck in old positions
+            for (let p of people) {
+                p.vel = p5.Vector.random2D().mult(random(1, 2));
+            }
+
+            const exp = document.getElementById('explanation');
+            const descriptions = [
+                "RANDOM: Dots move everywhere. They represent the Universal Set.",
+                "CLOSURE: Boundary active. The 'Operation' ensures results stay inside the set.",
+                "ASSOCIATIVE: Stable linking. Grouping doesn't change the outcome.",
+                "IDENTITY: The Gold element (e) is the anchor. a*e = a.",
+                "INVERSE: Balance active. Every element has a partner that brings it back to Identity.",
+                "ABELIAN: Commutative property settles the group into a symmetric, predictable structure."
+            ];
+            exp.innerHTML = descriptions[lvl];
+
+            // Update button styles
+            for (let i = 0; i <= 5; i++) {
+                let btn = document.getElementById('btn-' + i);
+                if (i === lvl) btn.classList.add('btn-active');
+                else btn.classList.remove('btn-active');
+            }
+        }
+
+        function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+    </script>
+</body>
+</html>
