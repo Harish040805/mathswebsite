@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <title>Number Range Finder</title>
 <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; height: 100vh; display: flex; flex-direction: column; }
-    h1 { color: #333; text-align: center; padding: 10px; margin: 0; }
-    .main-wrapper { display: flex; flex: 1; overflow: hidden; padding: 20px; gap: 20px; }
-    .sidebar { width: 300px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-    .output-area { flex: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow-y: auto; }
-    input { padding: 10px; margin: 10px 0; width: 100%; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-    .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-    button { padding: 12px; border: none; border-radius: 8px; background: #4CAF50; color: white; cursor: pointer; transition: background 0.2s; font-size: 14px; }
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; height: 100vh; display: flex; overflow: hidden; }
+    .main-wrapper { display: flex; flex: 1; padding: 15px; gap: 15px; }
+    .sidebar { width: 220px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-shrink: 0; }
+    .output-area { flex: 1; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-y: auto; }
+    h1 { color: #333; font-size: 1.2rem; text-align: left; margin: 0 0 15px 0; border-bottom: 2px solid #f4f6f9; padding-bottom: 10px; }
+    input { padding: 8px; margin: 5px 0 10px 0; width: 100%; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 13px; }
+    .button-group { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    button { padding: 10px; border: none; border-radius: 6px; background: #4CAF50; color: white; cursor: pointer; transition: background 0.2s; font-size: 13px; text-align: left; }
+  
     button:hover { background: #2e7031; }
     .active { background: #2e7031 !important; }
     #result { font-size: 1.2rem; line-height: 1.6; word-wrap: break-word; color: #444; }
@@ -19,9 +20,9 @@
   </style>
 </head>
 <body>
-<h1>Number Range Finder</h1>
   <div class="main-wrapper">
     <div class="sidebar">
+      <h1>Number Range Finder</h1>
       <label>Set the Numbers in Range:</label>
       <input type="number" id="first" placeholder="Enter first number">
       <input type="number" id="last" placeholder="Enter last number">
