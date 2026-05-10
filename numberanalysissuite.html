@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Analysis Suite</title>
+<style>
+    :root { --bg: #f0f4f8; --card: #ffffff; --accent: #0b63d6; --text: #2d3748; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    header { background: var(--accent); color: white; padding: 10px 20px; font-size: 1.1rem; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+    .container { display: flex; flex: 1; gap: 10px; padding: 10px; overflow: hidden; }
+    .pane { background: var(--card); border-radius: 8px; flex: 1; display: flex; flex-direction: column; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px; overflow: hidden; }
+    h2 { font-size: 1rem; margin: 0 0 10px 0; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .controls { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    input { padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 14px; flex: 1; min-width: 80px; }
+    button { padding: 8px 12px; border: none; border-radius: 4px; background: #edf2f7; color: var(--text); cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+    button.active, button.primary { background: var(--accent); color: white; }
+    button:hover { opacity: 0.9; }
+    .output-box { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px; overflow-y: auto; font-family: monospace; font-size: 14px; line-height: 1.5; }
+    .chip { display: inline-block; background: #eef3ff; padding: 2px 8px; border-radius: 12px; font-weight: 600; color: #073a9a; margin: 2px; font-size: 12px; }
+    .small-muted { font-size: 12px; color: #718096; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<header>
+    <span>Number Analysis Suite</span>
+    <span style="font-size: 12px; opacity: 0.8;">Range Finder & BigInt Factorizer</span>
+</header>
+
+<div class="container">
+    <div class="pane">
+        <h2>Number Range Finder</h2>
+        <div class="controls">
+            <b>Set the Numbers in Range: </b>
+            <input type="number" id="first" placeholder="Enter First Number (Start Number)">
+            <input type="number" id="last" placeholder="Enter Last Number (End Number)">
+        </div>
+        <div class="controls">
+            <button id="btnEven" onclick="setRangeOp('even')">Even Numbers</button>
+            <button id="btnOdd" onclick="setRangeOp('odd')">Odd Numbers</button>
+            <button id="btnPrime" onclick="setRangeOp('prime')">Prime Numbers</button>
+            <button id="btnComp" onclick="setRangeOp('composite')">Composite Numbers</button>
+            <button onclick="clearRange()" style="background:#e6eefc;">Clear</button>
+        </div>
+        <div id="rangeResult" class="output-box">Enter range and select mode...</div>
+    </div>
+
+    <div class="pane">
+        <h2>Prime Finder and Factorizer (BigInt)</h2>
+        <div class="controls">
+            <input id="numInput" type="text" placeholder="Enter an Integer (Also supports greater value and negative integers)">
+            <button class="primary" onclick="runFactorizer()">Factorize / Find Primes</button>
+            <button onclick="clearFactorizer()">Clear</button>
+        </div>
+        <div id="factorResult" class="output-box">Enter a number and click Factorize / Find Primes</div>
+    </div>
+</div>
+
+<script>
+let currentRangeOp = null;
+
+function isRangePrime(num) {
+    if (num < 2) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) { if (num % i === 0) return false; }
+    return true;
+}
+
+function setRangeOp(op) {
+    currentRangeOp = op;
+    const btns = ["btnEven", "btnOdd", "btnPrime", "btnComp"];
+    btns.forEach(id => document.getElementById(id).classList.remove("active"));
+    const activeId = op === 'even' ? 'btnEven' : op === 'odd' ? 'btnOdd' : op === 'prime' ? 'btnPrime' : 'btnComp';
+    document.getElementById(activeId).classList.add("active");
+    updateRange();
+}
+
+function updateRange() {
+    if (!currentRangeOp) return;
+    let first = parseInt(document.getElementById("first").value);
+    let last = parseInt(document.getElementById("last").value);
+    if (isNaN(first) || isNaN(last)) {
+        document.getElementById("rangeResult").innerText = "Please enter valid numbers.";
+        return;
+    }
+    if (first > last) [first, last] = [last, first];
+    let range = [];
+    for (let i = first; i <= last; i++) range.push(i);
+
+    let filtered = [];
+    let title = "";
+    if (currentRangeOp === "even") { title = "Even"; filtered = range.filter(n => n % 2 === 0); }
+    else if (currentRangeOp === "odd") { title = "Odd"; filtered = range.filter(n => n % 2 !== 0); }
+    else if (currentRangeOp === "prime") { title = "Prime"; filtered = range.filter(n => isRangePrime(n)); }
+    else if (currentRangeOp === "composite") { title = "Composite"; filtered = range.filter(n => n > 1 && !isRangePrime(n)); }
+
+    document.getElementById("rangeResult").innerHTML = `<strong>${title}:</strong><br>${filtered.length ? filtered.join(", ") : "None"}`;
+}
+
+document.getElementById("first").addEventListener("input", updateRange);
+document.getElementById("last").addEventListener("input", updateRange);
+
+function clearRange() {
+    document.getElementById("first").value = '';
+    document.getElementById("last").value = '';
+    document.getElementById("rangeResult").innerText = 'Enter range and select mode...';
+    currentRangeOp = null;
+    ["btnEven", "btnOdd", "btnPrime", "btnComp"].forEach(id => document.getElementById(id).classList.remove("active"));
+}
+
+function runFactorizer() {
+    const raw = document.getElementById('numInput').value.trim();
+    const out = document.getElementById('factorResult');
+    if(!raw) { out.textContent = 'Enter an integer.'; return; }
+    let sign = 1n; let s = raw;
+    if(s[0]==='-' || s[0]==='+') { if(s[0]==='-') sign = -1n; s = s.slice(1); }
+    if(!/^\d+$/.test(s)) { out.textContent = 'Invalid input.'; return; }
+    try {
+        let n = BigInt(s) * sign;
+        displayFactors(n);
+    } catch(e) { out.textContent = 'Error: Number too large.'; }
+}
+
+function displayFactors(n) {
+    const out = document.getElementById('factorResult');
+    if(n === 0n) { out.innerHTML = '<strong>0</strong>: Infinite divisors.'; return; }
+    if(n === 1n || n === -1n) { out.innerHTML = `<strong>${n}</strong>: ${n===1n?'Neither prime nor composite':'Unit'}`; return; }
+    const absN = n < 0n ? -n : n;
+    const signStr = n < 0n ? '-1 × ' : '';
+    if(isProbablyPrime(absN)) { out.innerHTML = `<strong>${n}</strong> = ${signStr}<span class="chip">${absN}</span><br><div class="small-muted">(Prime)</div>`; return; }
+    const factors = factorizeBigInt(absN);
+    const compact = [];
+    let i = 0;
+    while(i < factors.length) {
+        let p = factors[i], cnt = 1; i++;
+        while(i < factors.length && factors[i] === p) { cnt++; i++; }
+        compact.push([p, cnt]);
+    }
+    const compactStr = compact.map(([p,exp]) => exp===1 ? `${p}` : `${p}^${exp}`).join(' × ');
+    const unique = [...new Set(factors.map(f=>f.toString()))];
+    out.innerHTML = `<strong>${n}</strong><br>${signStr}${factors.join(' × ')}<br><div class="small-muted">${signStr}${compactStr}</div><div style="margin-top:8px">${unique.map(p=>`<span class="chip">${p}</span>`).join('')}</div>`;
+}
+
+function isProbablyPrime(n) {
+    if(n < 2n) return false;
+    const small = [2n,3n,5n,7n,11n,13n];
+    for(const p of small) { if(n === p) return true; if(n % p === 0n) return false; }
+    let i = 5n, w = 2n;
+    while(i * i <= n && i <= 1000n) { if(n % i === 0n) return false; i += w; w = 6n - w; }
+    return true;
+}
+
+function factorizeBigInt(n) {
+    let num = n; const f = [];
+    while(num % 2n === 0n) { f.push(2n); num /= 2n; }
+    while(num % 3n === 0n) { f.push(3n); num /= 3n; }
+    let i = 5n, step = 2n, limit = bigintSqrt(num) + 1n;
+    while(i <= limit && num > 1n) {
+        while(num % i === 0n) { f.push(i); num /= i; }
+        i += step; step = 6n - step;
+        if(i * i > num) break;
+    }
+    if(num > 1n) f.push(num);
+    return f;
+}
+
+function bigintSqrt(v) {
+    if(v < 2n) return v;
+    let x0 = v, x1 = (v >> 1n) + 1n;
+    while(x1 < x0) { x0 = x1; x1 = (v / x1 + x1) >> 1n; }
+    return x0;
+}
+
+function clearFactorizer() {
+    document.getElementById('numInput').value = '';
+    document.getElementById('factorResult').innerText = 'Enter a number and click Factorize.';
+}
+</script>
+</body>
+</html>
