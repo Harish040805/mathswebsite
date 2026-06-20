@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Solver</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f9f3; background-image: radial-gradient(#61A360 0.5px, #f4f9f3 0.5px); background-size: 10px 10px; color: #478046; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; gap: 24px; min-height: 100vh; box-sizing: border-box; }
+        .container { width: 100%; max-width: 800px; border: none; border-radius: 24px; padding: 40px; background-color: #FFF; box-shadow: 0 12px 32px rgba(71, 128, 70, 0.15); }
+        .actions-container { width: 100%; max-width: 350px; border: none; border-radius: 24px; padding: 40px; background-color: #FFF; box-shadow: 0 12px 32px rgba(71, 128, 70, 0.15); display: flex; flex-direction: column; }
+        h2, h3 { text-align: center; color: #478046; margin-top: 0; margin-bottom: 35px; font-size: 30px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .input-group { margin-bottom: 24px; }
+        input[type="text"] { width: 100%; padding: 16px 20px; border: 2px solid #e2efe1; border-radius: 12px; font-size: 16px; color: #478046; outline: none; background-color: #fafdfa; box-sizing: border-box; }
+        input[type="text"]:focus { border-color: #61A360; background-color: #FFF; box-shadow: 0 0 0 4px rgba(97, 163, 96, 0.15); }
+        .btn-tool { background-color: #61A360; color: #FFF; border: none; height: 48px; width: 70px; font-size: 16px; font-weight: 600; cursor: pointer; border-radius: 12px; box-shadow: 0 4px 12px rgba(97, 163, 96, 0.2); }
+        .btn-tool:hover { background-color: #478046; }
+        .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+        .btn-action { background-color: #478046; color: #FFF; border: none; padding: 16px; font-size: 15px; font-weight: 600; cursor: pointer; border-radius: 12px; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(71, 128, 70, 0.2); }
+        .btn-action:hover { background-color: #61A360; }
+        .clear-container { display: flex; gap: 12px; margin-bottom: 30px; }
+        .btn-clear { flex: 1; background-color: #e2efe1; color: #478046; border: none; height: 48px; font-size: 15px; font-weight: 600; cursor: pointer; border-radius: 12px; letter-spacing: 0.5px; }
+        .btn-clear:hover { background-color: #d1ebd0; color: #356134; }
+        .result-box { padding: 24px; border: 2px dashed #61A360; border-radius: 14px; height: 120px; font-size: 19px; font-weight: 600; text-align: center; background-color: #fafdfa; color: #478046; display: flex; align-items: center; justify-content: flex-start; overflow-x: auto; overflow-y: hidden; white-space: nowrap; box-sizing: border-box; }
+        .result-box::-webkit-scrollbar { height: 8px; }
+        .result-box::-webkit-scrollbar-track { background: #fafdfa; border-radius: 10px; }
+        .result-box::-webkit-scrollbar-thumb { background: #e2efe1; border-radius: 10px; }
+        .result-box::-webkit-scrollbar-thumb:hover { background: #d1ebd0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Calculus Solver</h2>
+    <div class="input-group">
+        <input type="text" id="equationInput" placeholder="Enter expression (e.g., x^3 + 2*x)" oninput="updateButtons()">
+    </div>
+    <div class="clear-container">
+        <button class="btn-tool" onclick="insertSymbol('f(x)=')">f(x)=</button>
+        <button class="btn-tool" onclick="insertSymbol('∫')">∫</button>
+        <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    </div>
+    <div class="result-box" id="output">Result will appear here</div>
+</div>
+<div class="actions-container">
+    <div class="actions" id="actionsContainer">
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    function updateButtons() {
+        const inputVal = document.getElementById('equationInput').value.trim();
+        const container = document.getElementById('actionsContainer');
+        let cleanExpr = inputVal.replace(/^f\(x\)\s*=\s*/, '').replace(/^∫\s*/, '');
+        let matches = cleanExpr.match(/[a-zA-Z]+/g) || [];
+        let vars = [];
+        const builtins = ['sin', 'cos', 'tan', 'log', 'ln', 'sqrt', 'exp', 'abs', 'math'];
+        for (let m of matches) {
+            if (!builtins.includes(m.toLowerCase()) && !vars.includes(m)) {
+                vars.push(m);
+            }
+        }
+        let diffVars = [];
+        if (vars.length === 0) {
+            diffVars = ['', 'y'];
+        } else if (vars.length === 1) {
+            diffVars = [vars[0], vars[0] === 'y' ? 'x' : 'y'];
+        } else {
+            diffVars = [...vars];
+            const pool = ['x', 'y', 'z', 'a', 'b', 'c', 'm', 'n'];
+            for (let letter of pool) {
+                if (!diffVars.includes(letter)) {
+                    diffVars.push(letter);
+                    break;
+                }
+            }
+        }
+        let html = '';
+        for (let v of diffVars) {
+            let label = v === '' ? 'd/d' : 'd/d' + v;
+            html += `<button class="btn-action" onclick="processCalculus('diff', '${v || 'x'}')">${label}</button>`;
+        }
+        for (let v of diffVars) {
+            if (v !== '') {
+                html += `<button class="btn-action" onclick="processCalculus('integrate', '${v}')">∫ d${v}</button>`;
+            }
+        }
+        container.innerHTML = html;
+    }
+    function clearAll() {
+        document.getElementById('equationInput').value = '';
+        document.getElementById('output').innerText = 'Result will appear here';
+        updateButtons();
+    }
+    function insertSymbol(symbol) {
+        const input = document.getElementById('equationInput');
+        input.value = symbol + input.value;
+        input.focus();
+        updateButtons();
+    }
+    window.addEventListener('DOMContentLoaded', updateButtons);
+    function processCalculus(operation, variable) {
+        const inputVal = document.getElementById('equationInput').value.trim();
+        const output = document.getElementById('output');
+        if (!inputVal) {
+            output.innerText = "Please enter an equation.";
+            return;
+        }
+        let cleanExpr = inputVal.replace(/^f\(x\)\s*=\s*/, '').replace(/^∫\s*/, '');
+        try {
+            if (operation === 'diff') {
+                let derivative = math.derivative(cleanExpr, variable);
+                output.innerHTML = "$$\\frac{d}{d" + variable + "} = " + derivative.toTex() + "$$";
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, output]);
+            } else if (operation === 'integrate') {
+                let rationalized = math.rationalize(cleanExpr);
+                let integratedTerms = [];
+                let success = true;
+                
+                function collectPolynomialTerms(node, sign = 1) {
+                    if (node.type === 'OperatorNode' && (node.op === '+' || node.op === '-')) {
+                        collectPolynomialTerms(node.args[0], sign);
+                        collectPolynomialTerms(node.args[1], node.op === '-' ? -sign : sign);
+                    } else {
+                        let termStr = node.toString().replace(/\s+/g, '');
+                        let parsedNode;
+                        try {
+                            parsedNode = math.parse(termStr);
+                        } catch(e) {
+                            success = false;
+                            return;
+                        }
+                        
+                        let coeff = 1;
+                        let power = 0;
+                        let hasTarget = false;
+                        let remainingParts = [];
+
+                        function analyze(n) {
+                            if (n.type === 'OperatorNode' && n.op === '*') {
+                                analyze(n.args[0]);
+                                analyze(n.args[1]);
+                            } else if (n.type === 'OperatorNode' && n.op === '^') {
+                                if (n.args[0].type === 'SymbolNode' && n.args[0].name === variable) {
+                                    hasTarget = true;
+                                    power = parseInt(n.args[1].value || n.args[1].toString());
+                                } else {
+                                    remainingParts.push(n.toString());
+                                }
+                            } else if (n.type === 'SymbolNode') {
+                                if (n.name === variable) {
+                                    hasTarget = true;
+                                    power = 1;
+                                } else {
+                                    remainingParts.push(n.name);
+                                }
+                            } else if (n.type === 'ConstantNode') {
+                                coeff *= parseFloat(n.value);
+                            } else if (n.type === 'OperatorNode' && n.op === '-' && n.args.length === 1) {
+                                coeff *= -1;
+                                analyze(n.args[0]);
+                            } else {
+                                remainingParts.push(n.toString());
+                            }
+                        }
+
+                        analyze(parsedNode);
+
+                        let integratedStr = "";
+                        let constantMultiplier = remainingParts.length > 0 ? coeff + "*" + remainingParts.join("*") : coeff.toString();
+
+                        if (hasTarget) {
+                            let newPower = power + 1;
+                            integratedStr = "(" + constantMultiplier + ")/" + newPower + "*" + variable + "^" + newPower;
+                        } else {
+                            integratedStr = "(" + constantMultiplier + ")*" + variable;
+                        }
+
+                        if (sign === -1) {
+                            integratedStr = `-(${integratedStr})`;
+                        }
+                        integratedTerms.push(integratedStr);
+                    }
+                }
+
+                collectPolynomialTerms(rationalized);
+
+                if (success && integratedTerms.length > 0) {
+                    let resStr = integratedTerms.join(' + ');
+                    let simplified = math.simplify(resStr);
+                    output.innerHTML = "$$\\int = " + simplified.toTex() + " + C$$";
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, output]);
+                } else {
+                    output.innerText = "Integration is only supported for basic polynomial terms in this environment.";
+                }
+            }
+        } catch (error) {
+            output.innerText = "Error: Invalid Expression";
+        }
+    }
+</script>
+</body>
+</html>
