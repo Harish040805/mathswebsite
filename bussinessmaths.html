@@ -12,17 +12,19 @@
 <div class="left-div" style="flex: 7;">
 <div class="container">
   <h2>PROFIT & LOSS CALCULATOR</h2>
-  <div class="column">
-    <label for="costPrice">Cost Price &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="costPrice" placeholder="Enter Cost Price"></label>
-    <label for="sellingPrice">Selling Price &nbsp; &nbsp;<input type="number" id="sellingPrice" placeholder="Enter Selling Price"></label>
-    <label for="marketPrice">Market Price &nbsp; &nbsp;<input type="number" id="marketPrice" placeholder="Enter Market Price"></label>
-    <label for="quantity">Quantity &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="quantity" placeholder="Enter Quantity" value="1" min="1"></label>
-  </div>
-  <div class="column">
-    <label for="profitAmount">Profit Amount &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="profitAmount" placeholder="Profit Amount"></label>
-    <label for="profitPercentage">Profit Percentage &nbsp;<input type="number" id="profitPercentage" placeholder="Profit Percentage"></label>
-    <label for="lossAmount">Loss Amount &nbsp; &nbsp; &nbsp; &nbsp;<input type="number" id="lossAmount" placeholder="Loss Amount"></label>
-    <label for="lossPercentage">Loss Percentage &nbsp;<input type="number" id="lossPercentage" placeholder="Loss Percentage"></label>
+  <div class="calculator-section">
+    <div class="input-group">
+      <label for="costPrice">Cost Price <input type="number" id="costPrice" placeholder="Enter Cost Price"></label>
+      <label for="sellingPrice">Selling Price <input type="number" id="sellingPrice" placeholder="Enter Selling Price"></label>
+      <label for="marketPrice">Market Price <input type="number" id="marketPrice" placeholder="Enter Market Price"></label>
+      <label for="quantity">Quantity <input type="number" id="quantity" placeholder="Enter Quantity" value="1" min="1"></label>
+    </div>
+    <div class="input-group">
+      <label for="profitAmount">Profit Amount <input type="number" id="profitAmount" placeholder="Profit Amount"></label>
+      <label for="profitPercentage">Profit Percentage <input type="number" id="profitPercentage" placeholder="Profit Percentage"></label>
+      <label for="lossAmount">Loss Amount <input type="number" id="lossAmount" placeholder="Loss Amount"></label>
+      <label for="lossPercentage">Loss Percentage <input type="number" id="lossPercentage" placeholder="Loss Percentage"></label>
+    </div>
   </div>
   <div class="button-container">
       <button id="calculateBtn">Calculate</button>
@@ -30,33 +32,37 @@
       <button id="clearBtn">Clear All</button>
       <div class="result-container" id="result">Profit/Loss result will appear here</div>
   </div>
-  <br>
-  <h2>INTEREST CALCULATOR</h2>
-<table>
-  <tc>
-    <label>Principal Amount:</label>
-    <label>Rate of Interest (%):</label>
-    <label>Time (in years): </label>
-  </tc>
-  <div class="columnn">
-  <tc>
-     <input type="number" id="principal" placeholder="Enter principal amount">
-     <input type="number" id="rate" placeholder="Enter rate">
-     <input type="number" id="time" placeholder="Enter time">
-  </tc>
-  </div>
-<div class="column">
-<tc>
-  <label>Simple Interest: </label>
-  <label>Compound Interest: </label>
-</tc>
-</div>
-  <tc>
-    <input type="number" id="simpleInterest" placeholder="Enter Simple Interest">
-    <input type="number" id="compoundInterest" placeholder="Enter Compound Interest">
-  </tc>
-</table>
-  <div class="button-container">
+  
+  <br><br>
+  
+<h2>INTEREST CALCULATOR</h2>
+  <div class="interest-grid">
+    <div class="interest-row">
+      <div class="interest-row-item">
+        <label for="principal">Principal Amount:</label>
+        <input type="number" id="principal" placeholder="Enter principal amount">
+      </div>
+      <div class="interest-row-item">
+        <label for="rate">Rate of Interest (%):</label>
+        <input type="number" id="rate" placeholder="Enter rate">
+      </div>
+      <div class="interest-row-item">
+        <label for="time">Time (in years):</label>
+        <input type="number" id="time" placeholder="Enter time">
+      </div>
+    </div>
+    <div class="interest-row">
+      <div class="interest-row-item">
+        <label for="simpleInterest">Simple Interest:</label>
+        <input type="number" id="simpleInterest" placeholder="Enter Simple Interest">
+      </div>
+      <div class="interest-row-item">
+        <label for="compoundInterest">Compound Interest:</label>
+        <input type="number" id="compoundInterest" placeholder="Enter Compound Interest">
+      </div>
+    </div>
+  </div>  
+<div class="button-container">
     <button onclick="updateInterest()">Calculate Interest</button>
     <div class="result-container" id="interestResult">Interest result will appear here</div>
   </div>
