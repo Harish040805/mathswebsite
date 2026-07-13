@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time, Speed, Distance, Work & Men Solver</title>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #2b2b2b; margin: 0; padding: 0px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #ffffff; border: 2px solid #ffd700; border-radius: 16px; box-shadow: 0 10px 30px rgba(218, 165, 32, 0.15); padding: 40px; max-width: 1200px; width: 100%; }
+        h1 { text-align: center; color: #d4af37; margin-top: 0; margin-bottom: 30px; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; }
+        h2 { color: #d4af37; font-size: 18px; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .shared-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #ffd700; }
+        .shared-input-wrapper { width: 100%; max-width: 300px; text-align: center; }
+        .columns-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 0px; }
+        .main-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
+        .column { background-color: #ffffff; border: 1px solid #ffd700; border-radius: 12px; padding: 25px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group:last-of-type { margin-bottom: 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: #707070; }
+        input { width: 100%; padding: 12px; border: 1px solid #ffd700; border-radius: 6px; box-sizing: border-box; font-size: 16px; color: #2b2b2b; background-color: #ffffff; transition: all 0.3s ease; }
+        input:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
+        .visual-container { display: flex; justify-content: space-around; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #ffd700; }
+        .gauge-box { display: flex; flex-direction: column; align-items: center; }
+        .gauge-label { font-size: 12px; color: #707070; margin-bottom: 8px; text-transform: uppercase; }
+        .clock-visual { width: 120px; height: 120px; border: 3px solid #ffd700; border-radius: 50%; position: relative; background: #303030; }
+        .clock-hand { width: 3px; height: 45px; background: #d4af37; position: absolute; top: 15px; left: 58.5px; transform-origin: bottom center; animation: clock-spin 1s linear infinite paused; }
+        .clock-number { position: absolute; width: 20px; height: 20px; text-align: center; font-size: 10px; font-weight: bold; color: #707070; }
+        .speed-visual { width: 120px; height: 120px; border: 3px solid #ffd700; border-radius: 50%; position: relative; background: #ffffff; border-bottom-color: transparent; transform: rotate(-45deg); }
+        .speed-needle { width: 3px; height: 48px; background: #d4af37; position: absolute; bottom: 57px; left: 58.5px; transform-origin: bottom center; transform: rotate(-135deg); transition: transform 0.5s ease; }
+        .speed-number { position: absolute; width: 30px; height: 15px; text-align: center; font-size: 9px; font-weight: bold; color: #707070; }
+        .gauge-value { font-size: 14px; font-weight: bold; color: #2b2b2b; margin-top: 5px; transform: rotate(0deg); }
+        .speed-visual .gauge-value { transform: rotate(45deg); position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; margin-top: 0; }
+        @keyframes clock-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes speedometer-sweep {
+            from { transform: rotate(-45deg); }
+            to { transform: rotate(135deg); }
+        }
+        .clear-btn { background-color: #ffd700; color: #ffffff; border: 2px solid #edc900; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .clear-btn:hover { background-color: #edc900; border: 2px solid #ffd700; color: #ffffff; }
+        @media (max-width: 768px) {
+            .columns-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<h1>Time, Speed, Distance, Work & Men Solver</h1>
+    <div class="main-layout">
+        <div class="column" style="margin-bottom: 40px;">
+            <h2>Shared Parameter</h2>
+            <div class="gauge-box" style="margin-top: 20px;">
+                <div class="input-group">
+                    <table style="width: 100%; border-collapse: collapse; border: none;">
+                        <tr style="border: none;">
+                            <td style="border: none; padding: 0; text-align: left; vertical-align: middle; width: 40%;"><label for="time" style="margin-bottom: 0;">Time (t)</label></td>
+                            <td style="border: none; padding: 0; width: 60%;"><input type="number" id="time" step="any" placeholder="Enter Time" oninput="calculateAll('time')"></td>
+                        </tr>
+                    </table>
+                </div>
+                <span class="gauge-label">Live Time Output</span>
+                <div class="clock-visual">
+                    <div id="clockHand" class="clock-hand"></div>
+                    <div class="clock-number" style="top: 2px; left: 50px;">12</div>
+                    <div class="clock-number" style="top: 12px; right: 23px;">1</div>
+                    <div class="clock-number" style="top: 33px; right: 5px;">2</div>
+                    <div class="clock-number" style="top: 50px; right: 2px;">3</div>
+                    <div class="clock-number" style="top: 68px; right: 7px;">4</div>
+                    <div class="clock-number" style="top: 88px; right: 23px;">5</div>
+                    <div class="clock-number" style="bottom: 2px; left: 50px;">6</div>
+                    <div class="clock-number" style="top: 88px; left: 23px;">7</div>
+                    <div class="clock-number" style="top: 68px; left: 7px;">8</div>
+                    <div class="clock-number" style="top: 50px; left: 2px;">9</div>
+                    <div class="clock-number" style="top: 33px; left: 5px;">10</div>
+                    <div class="clock-number" style="top: 12px; left: 23px;">11</div>
+                </div>
+                <div id="clockVal" class="gauge-value">-</div>
+            </div>
+        </div>
+        <div class="columns-container">
+        <div class="column">
+            <h2>Time, Speed & Distance</h2>
+            <div class="input-group">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; padding: 0; text-align: left; vertical-align: middle; width: 40%;"><label for="distance" style="margin-bottom: 0;">Distance (d)</label></td>
+                        <td style="border: none; padding: 0; width: 60%;"><input type="number" id="distance" step="any" placeholder="Enter Distance" oninput="calculateAll('distance')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="input-group">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; padding: 0; text-align: left; vertical-align: middle; width: 40%;"><label for="speed" style="margin-bottom: 0;">Speed (s)</label></td>
+                        <td style="border: none; padding: 0; width: 60%;"><input type="number" id="speed" step="any" placeholder="Enter Speed" oninput="calculateAll('speed')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="visual-container">
+                <div class="gauge-box">
+                    <span class="gauge-label">Live Speedometer</span>
+                    <div class="speed-visual">
+                        <div id="speedNeedle" class="speed-needle"></div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-135deg) translateY(-55px) rotate(135deg);">0</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-114deg) translateY(-55px) rotate(114deg);">20</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-93deg) translateY(-55px) rotate(93deg);">40</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-73deg) translateY(-55px) rotate(73deg);">60</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-52deg) translateY(-55px) rotate(52deg);">80</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-31deg) translateY(-55px) rotate(31deg);">100</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg) translateY(-55px) rotate(10deg);">120</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(10deg) translateY(-55px) rotate(-10deg);">140</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(31deg) translateY(-55px) rotate(-31deg);">160</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(52deg) translateY(-55px) rotate(-52deg);">180</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(73deg) translateY(-55px) rotate(-73deg);">200</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(93deg) translateY(-55px) rotate(-93deg);">220</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(114deg) translateY(-55px) rotate(-114deg);">240</div>
+                        <div class="speed-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(135deg) translateY(-55px) rotate(-135deg);">260</div>
+                        <div id="speedVal" class="gauge-value">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <h2>Time, Work & Men</h2>
+            <div class="input-group">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; padding: 0; text-align: left; vertical-align: middle; width: 40%;"><label for="work" style="margin-bottom: 0;">Work (w)</label></td>
+                        <td style="border: none; padding: 0; width: 60%;"><input type="number" id="work" step="any" placeholder="Enter Work" oninput="calculateAll('work')"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="input-group">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr style="border: none;">
+                        <td style="border: none; padding: 0; text-align: left; vertical-align: middle; width: 40%;"><label for="men" style="margin-bottom: 0;">Men (m)</label></td>
+                        <td style="border: none; padding: 0; width: 60%;"><input type="number" id="men" step="any" placeholder="Enter Men" oninput="calculateAll('men')"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+            <button class="clear-btn" onclick="clearFields()">Reset All Fields</button>
+        </div>
+    </div>
+</div>
+<script>
+    function updateVisuals(t, s) {
+        const hand = document.getElementById('clockHand');
+        const needle = document.getElementById('speedNeedle');
+        const clockVal = document.getElementById('clockVal');
+        const speedVal = document.getElementById('speedVal');
+
+        if (t !== null && t > 0) {
+            clockVal.textContent = t.toFixed(2);
+            hand.style.animationDuration = t + 's';
+            hand.style.animationPlayState = 'running';
+        } else {
+            clockVal.textContent = '-';
+            hand.style.animationPlayState = 'paused';
+        }
+
+        if (s !== null && s >= 0) {
+            speedVal.textContent = s.toFixed(2);
+            let maxSpeed = 260;
+            let percentage = Math.min(s / maxSpeed, 1);
+            let degrees = (percentage * 270) - 135;
+            needle.style.transform = 'rotate(' + degrees + 'deg)';
+        } else {
+            speedVal.textContent = '-';
+            needle.style.transform = 'rotate(-135deg)';
+        }
+    }
+
+    function calculateAll(changedField) {
+        const tEl = document.getElementById('time');
+        const dEl = document.getElementById('distance');
+        const sEl = document.getElementById('speed');
+        const wEl = document.getElementById('work');
+        const mEl = document.getElementById('men');
+
+        let t = tEl.value !== '' ? parseFloat(tEl.value) : null;
+        let d = dEl.value !== '' ? parseFloat(dEl.value) : null;
+        let s = sEl.value !== '' ? parseFloat(sEl.value) : null;
+        let w = wEl.value !== '' ? parseFloat(wEl.value) : null;
+        let m = mEl.value !== '' ? parseFloat(mEl.value) : null;
+
+        if (changedField === 'time') {
+            if (t !== null && t !== 0) {
+                if (s !== null && changedField !== 'distance') {
+                    dEl.value = (s * t).toFixed(2);
+                } else if (d !== null && changedField !== 'speed') {
+                    sEl.value = (d / t).toFixed(2);
+                    s = parseFloat(sEl.value);
+                }
+                if (m !== null && changedField !== 'work') {
+                    wEl.value = (m * t).toFixed(2);
+                } else if (w !== null && changedField !== 'men') {
+                    mEl.value = (w / t).toFixed(2);
+                }
+            }
+        }
+
+        if (changedField === 'distance') {
+            if (d !== null) {
+                if (s !== null && s !== 0) {
+                    tEl.value = (d / s).toFixed(2);
+                    t = parseFloat(tEl.value);
+                    calculateAll('time');
+                } else if (t !== null && t !== 0) {
+                    sEl.value = (d / t).toFixed(2);
+                    s = parseFloat(sEl.value);
+                }
+            }
+        }
+
+        if (changedField === 'speed') {
+            if (s !== null) {
+                if (d !== null) {
+                    if (s !== 0) {
+                        tEl.value = (d / s).toFixed(2);
+                        t = parseFloat(tEl.value);
+                        calculateAll('time');
+                    }
+                } else if (t !== null) {
+                    dEl.value = (s * t).toFixed(2);
+                }
+            }
+        }
+
+        if (changedField === 'work') {
+            if (w !== null) {
+                if (m !== null && m !== 0) {
+                    tEl.value = (w / m).toFixed(2);
+                    t = parseFloat(tEl.value);
+                    calculateAll('time');
+                } else if (t !== null && t !== 0) {
+                    mEl.value = (w / t).toFixed(2);
+                }
+            }
+        }
+
+        if (changedField === 'men') {
+            if (m !== null) {
+                if (w !== null) {
+                    if (m !== 0) {
+                        tEl.value = (w / m).toFixed(2);
+                        t = parseFloat(tEl.value);
+                        calculateAll('time');
+                    }
+                } else if (t !== null) {
+                    wEl.value = (m * t).toFixed(2);
+                }
+            }
+        }
+
+        updateVisuals(t, s);
+    }
+
+    function clearFields() {
+        document.getElementById('time').value = '';
+        document.getElementById('distance').value = '';
+        document.getElementById('speed').value = '';
+        document.getElementById('work').value = '';
+        document.getElementById('men').value = '';
+        updateVisuals(null, null);
+    }
+</script>
+</body>
+</html>
