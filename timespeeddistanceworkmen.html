@@ -4,49 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time, Speed, Distance, Work & Men Solver</title>
-<style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #ffffff; color: #2b2b2b; margin: 0; padding: 0px 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background-color: #ffffff; border: 2px solid #ffd700; border-radius: 16px; box-shadow: 0 10px 30px rgba(218, 165, 32, 0.15); padding: 40px; max-width: 1200px; width: 100%; }
-        h1 { text-align: center; color: #d4af37; margin-top: 0; margin-bottom: 30px; font-size: 28px; letter-spacing: 1px; text-transform: uppercase; }
-        h2 { color: #d4af37; font-size: 18px; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
-        .shared-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #ffd700; }
-        .shared-input-wrapper { width: 100%; max-width: 300px; text-align: center; }
-        .columns-container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 0px; }
-        .main-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
-        .column { background-color: #ffffff; border: 1px solid #ffd700; border-radius: 12px; padding: 25px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group:last-of-type { margin-bottom: 0; }
-        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: #707070; }
-        input { width: 100%; padding: 12px; border: 1px solid #ffd700; border-radius: 6px; box-sizing: border-box; font-size: 16px; color: #2b2b2b; background-color: #ffffff; transition: all 0.3s ease; }
-        input:focus { outline: none; border-color: #d4af37; box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); }
-        .visual-container { display: flex; justify-content: space-around; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #ffd700; }
-        .gauge-box { display: flex; flex-direction: column; align-items: center; }
-        .gauge-label { font-size: 12px; color: #707070; margin-bottom: 8px; text-transform: uppercase; }
-        .clock-visual { width: 120px; height: 120px; border: 3px solid #ffd700; border-radius: 50%; position: relative; background: #303030; }
-        .clock-hand { width: 3px; height: 45px; background: #d4af37; position: absolute; top: 15px; left: 58.5px; transform-origin: bottom center; animation: clock-spin 1s linear infinite paused; }
-        .clock-number { position: absolute; width: 20px; height: 20px; text-align: center; font-size: 10px; font-weight: bold; color: #707070; }
-        .speed-visual { width: 120px; height: 120px; border: 3px solid #ffd700; border-radius: 50%; position: relative; background: #ffffff; border-bottom-color: transparent; transform: rotate(-45deg); }
-        .speed-needle { width: 3px; height: 48px; background: #d4af37; position: absolute; bottom: 57px; left: 58.5px; transform-origin: bottom center; transform: rotate(-135deg); transition: transform 0.5s ease; }
-        .speed-number { position: absolute; width: 30px; height: 15px; text-align: center; font-size: 9px; font-weight: bold; color: #707070; }
-        .gauge-value { font-size: 14px; font-weight: bold; color: #2b2b2b; margin-top: 5px; transform: rotate(0deg); }
-        .speed-visual .gauge-value { transform: rotate(45deg); position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; margin-top: 0; }
-        @keyframes clock-spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes speedometer-sweep {
-            from { transform: rotate(-45deg); }
-            to { transform: rotate(135deg); }
-        }
-        .clear-btn { background-color: #ffd700; color: #ffffff; border: 2px solid #edc900; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
-        .clear-btn:hover { background-color: #edc900; border: 2px solid #ffd700; color: #ffffff; }
-        @media (max-width: 768px) {
-            .columns-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="timespeeddistanceworkmencss.css">
 </head>
 <body>
 <div class="container">
